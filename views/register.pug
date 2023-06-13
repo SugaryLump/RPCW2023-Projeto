@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    form#register-form(method="post")
+        h1 Register
+        label(for="email") E-mail
+        input(name="email")
+        label(for="name") Name
+        input(name="name")
+        label(for="password") Password
+        input(type='password', name="password")
+        label(for="password_confirm") Confirm Password
+        input(type="password", name="password_confirm")
+        input(type="submit" value="Register")
+        p Already have an account? #[a(href='/login') Login here].

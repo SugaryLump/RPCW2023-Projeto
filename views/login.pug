@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    form#login-form(method="post")
+        h1 Login
+        label(for="email") E-mail
+        input(name="email")
+        label(for="password") Password
+        input(type="password", name="password")
+        input(type="submit" value="Login")
+        p Don't have an account yet? #[a(href='/register') Start learning now].
