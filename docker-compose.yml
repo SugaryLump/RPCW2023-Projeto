@@ -1,10 +1,31 @@
 version: '3'
 services:
-  mongodb:
-    image: mongo:latest
-    volumes:
-      - mongodata:/data/db
+  learnvault:
+    container_name: learnvault
+    build: .
+    restart: always
+    environment:
+      - MONGODB_URL=mongodb://mongodb/LearnVault
     ports:
-      - 27017:27017
+      - '7777:7777'
+    depends_on:
+      - mongodb
+    networks:
+      - learnvault-network
+
+  mongodb:
+    container_name: learnvault-mongo
+    image: mongo
+    restart: always
+    volumes:
+      - './dbdata:/data/db'
+    networks:
+      - learnvault-network
+
 volumes:
-  mongodata:
+  dbdata:
+
+networks:
+  learnvault-network:
+    driver: bridge
+
