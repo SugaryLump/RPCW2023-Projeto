@@ -3,7 +3,7 @@ block content
   .w3-card-4
     header.w3-indigo
       h2 Upload a resource
-    form.w3-container(action='/files' method='POST' enctype='multipart/form-data')
+    form.w3-container(method='POST' enctype='multipart/form-data')
         fieldset
             legend Resource
             label.w3-text-indigo
@@ -15,6 +15,9 @@ block content
             label.w3-text-indigo
                 b Subtitulo
             input.w3-input.w3-border.w3-light-grey(type='text' name='subtitle')
+            label.w3-text-indigo
+                b Descrição
+            input.w3-input.w3-border.w3-light-grey(type='text' name='description')
             label.w3-text-indigo
                 b Tipo de Recurso
             select.w3-select.w3-border.w3-light-grey(name='type', required='required')
@@ -29,12 +32,12 @@ block content
                 option(value='other') Outro
             label.w3-text-indigo
                 b Data Criação
-            input.w3-input.w3-border.w3-light-grey(type='date' name='creation_date')
+            input.w3-input.w3-border.w3-light-grey(type='date' name='creationDate', required='required')
             fieldset
                 legend Visibilidade:
                 div
                     input.w3-radio.w3-border.w3-light-grey(type='radio' name='visibility' value='public' checked='checked')
-                    label(for='public') Publico
+                    label(for='public') Público
                 div
                     input.w3-radio.w3-border.w3-light-grey(type='radio' name='visibility' value='private')
                     label(for='private') Privado

@@ -7,9 +7,10 @@ var resourceSchema = mongoose.Schema({
   description: String,
   creationDate: Date,
   registrationDate: Date,
-  public: Boolean,
+  isPublic: Boolean,
   author: String,
   hashTags: [String],
+  resourcePath: String,
 });
 
 module.exports = mongoose.model("resource", resourceSchema);

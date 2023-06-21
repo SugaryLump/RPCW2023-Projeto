@@ -10,6 +10,8 @@ services:
       - '7777:7777'
     depends_on:
       - mongodb
+    volumes:
+      - './uploads:/app/uploads'
     networks:
       - learnvault-network
 
@@ -24,6 +26,7 @@ services:
 
 volumes:
   dbdata:
+  uploads:
 
 networks:
   learnvault-network:
