@@ -38,6 +38,7 @@ router.post('/', function(req, res, next) {
                     if(e) res.render('login', {alerts:[String(err)]})
                     else res.cookie("access_token_learnvault", token).status(200).redirect("/")
             });
+            userController.updateLastActiveAt(user);
         })
     })(req, res, next)
 })

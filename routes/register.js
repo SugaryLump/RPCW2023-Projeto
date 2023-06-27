@@ -19,6 +19,7 @@ router.post("/", function (req, res, next) {
     new userModel({
       email: req.body.email,
       name: req.body.name,
+      affiliation: req.body.affiliation,
     }),
     req.body.password,
     function (err, user) {

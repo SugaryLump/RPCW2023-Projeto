@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var resourceController = require("../controllers/resource");
 var resourceModel = require("../models/resource");
+var auth = require("../shared/auth");
 var upload = require("./upload");
 
 router.get("/", function (req, res, next) {
@@ -22,7 +23,6 @@ router.get("/", function (req, res, next) {
 
 router.get("/new", function (req, res, next) {
   var d = new Date().toISOString().substring(0, 16);
-  console.log("teste");
   res.render("addResourceForm", { d: d });
 });
 
@@ -33,10 +33,10 @@ router.post("/new", upload.single("resource"), function (req, res, next) {
   // lidar com subtitulo opcional
 });
 
-router.get('/download/:fname', function(req, res) {
+router.get("/download/:fname", function (req, res) {
   const filename = req.params.fname;
-  const originalName = filename.replace(/(.*?)-/,"");
-  res.download(__dirname + "/../public/uploads/" + filename, originalName)
-})
+  const originalName = filename.replace(/(.*?)-/, "");
+  res.download(__dirname + "/../public/uploads/" + filename, originalName);
+});
 
 module.exports = router;
