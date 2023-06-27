@@ -12,6 +12,7 @@ services:
       - mongodb
     volumes:
       - '.:/app'
+      - './public/uploads:/app/public/uploads'
     networks:
       - learnvault-network
     command: "npm run dev"
