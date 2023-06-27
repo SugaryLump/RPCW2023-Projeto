@@ -1,11 +1,13 @@
 extends layout
 
 block content
-    form#login-form(method="post")
-        h1 Login
-        label(for="email") E-mail
-        input(name="email")
-        label(for="password") Password
-        input(type="password", name="password")
-        input(type="submit" value="Login")
+    form#login-form(method="post").flex.flex-col.gap-2
+        h1.text-4xl Login
+        .flex.flex-col
+            label(for="email") E-mail
+            input(name="email", type="email")
+        .flex.flex-col
+            label(for="password") Password
+            input(type="password", name="password")
+        input(type="submit" value="Login").button
         p Don't have an account yet? #[a(href='/register') Start learning now].

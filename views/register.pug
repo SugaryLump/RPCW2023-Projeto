@@ -1,17 +1,22 @@
 extends layout
 
 block content
-    form#register-form(method="post")
+    form#register-form(method="post").flex.flex-col.gap-2
         h1 Register
-        label(for="email") E-mail
-        input(name="email")
-        label(for="name") Name
-        input(name="name")
-        label(for="affiliation") Filiação
-        input(name="affiliation")
-        label(for="password") Password
-        input(type='password', name="password")
-        label(for="password_confirm") Confirm Password
-        input(type="password", name="password_confirm")
-        input(type="submit" value="Register")
+        .flex.flex-col
+            label(for="email" type="email") E-mail
+            input(name="email")
+        .flex.flex-col
+            label(for="name") Name
+            input(name="name")
+        .flex.flex-col
+            label(for="name") Affiliation
+            input(name="affiliation")
+        .flex.flex-col
+            label(for="password") Password
+            input(type='password', name="password")
+        .flex.flex-col
+            label(for="password_confirm") Confirm Password
+            input(type="password", name="password_confirm")
+        input(type="submit" value="Register").button
         p Already have an account? #[a(href='/login') Login here].

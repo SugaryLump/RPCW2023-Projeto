@@ -2,10 +2,18 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/w3.css')
+    link(rel='stylesheet', href='/stylesheets/dist.css')
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
     if alerts
       .alerts
       each alert in alerts
         .alert=alert
-    block content
+    nav.flex.bg-primary-700.p-4.text-white.shadow-md.items-center.justify-between.mb-4
+      div
+        block nav
+      .flex.items-center
+        h2 todo user
+    .container.mx-auto.px-4
+      block content

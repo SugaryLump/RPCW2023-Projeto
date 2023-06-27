@@ -1,8 +1,31 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input, select, textarea {
+  @apply px-2 py-1 bg-slate-200 border-slate-300 border-solid border rounded-md;
+}
+
+textarea {
+  min-height: 6em;
+}
+
+.button {
+  @apply bg-blue-400 border-blue-800 cursor-pointer hover:bg-blue-500;
 }
 
 a {
-  color: #00B7FF;
+  @apply text-blue-600 underline;
+}
+
+h1 {
+  @apply text-4xl;
+}
+
+h2 {
+  @apply text-3xl;
+}
+
+a.text-button {
+  @apply text-slate-800 no-underline text-4xl bg-white px-4 text-center rounded-full;
 }
