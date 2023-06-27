@@ -11,7 +11,7 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - './uploads:/app/uploads'
+      - './public/uploads:/app/public/uploads'
     networks:
       - learnvault-network
 

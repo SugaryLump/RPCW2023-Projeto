@@ -4,7 +4,7 @@ module.exports.list = () => {
   return resourceModel.find();
 };
 
-module.exports.insert = (resource, filePath) => {
+module.exports.insert = (resource, filename) => {
   resourceModel
     .create({
       title: resource.title,
@@ -17,7 +17,7 @@ module.exports.insert = (resource, filePath) => {
       isPublic: resource.visibility == "public",
       author: resource.author,
       hashtags: resource.hashtags,
-      resourcePath: filePath,
+      filename: filename,
     })
     .then((data) => {
       console.log("Resource created successfully");

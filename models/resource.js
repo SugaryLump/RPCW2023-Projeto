@@ -10,7 +10,7 @@ var resourceSchema = mongoose.Schema({
   isPublic: Boolean,
   author: String,
   hashTags: [String],
-  resourcePath: String,
+  filename: String,
 });
 
 module.exports = mongoose.model("resource", resourceSchema);

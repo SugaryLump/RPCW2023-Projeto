@@ -27,10 +27,16 @@ router.get("/new", function (req, res, next) {
 });
 
 router.post("/new", upload.single("resource"), function (req, res, next) {
-  resourceController.insert(req.body, req.file.path);
+  resourceController.insert(req.body, req.file.filename);
   res.redirect("/resources");
   // adicionar error handling
   // lidar com subtitulo opcional
 });
+
+router.get('/download/:fname', function(req, res) {
+  const filename = req.params.fname;
+  const originalName = filename.replace(/(.*?)-/,"");
+  res.download(__dirname + "/../public/uploads/" + filename, originalName)
+})
 
 module.exports = router;

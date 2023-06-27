@@ -13,7 +13,8 @@ block content
           th Creation Date
           th Visibility
           th Author
-          th Resource Path
+          th Filename
+          th
 
         each r in resources
           tr
@@ -26,7 +27,8 @@ block content
             else
               td Private
             td= r.author
-            td= r.resourcePath
+            td= r.filename
+            td #[a.w3-button.w3-round.w3-blue(href="/resources/download/"+ r.filename) Download]
 
 
     .footer.w3-container.w3-indigo
