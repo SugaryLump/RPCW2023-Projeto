@@ -1,5 +1,21 @@
 version: '3'
 services:
+  learnvault-dev:
+    container_name: learnvault-dev
+    build: .
+    restart: always
+    environment:
+      - MONGODB_URL=mongodb://mongodb/LearnVault
+    ports:
+      - '7777:7777'
+    depends_on:
+      - mongodb
+    volumes:
+      - '.:/app'
+    networks:
+      - learnvault-network
+    command: "npm run dev"
+
   learnvault:
     container_name: learnvault
     build: .
