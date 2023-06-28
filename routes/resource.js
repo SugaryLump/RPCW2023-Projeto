@@ -35,7 +35,7 @@ router.all("/new", function (req, res, next) {
   res.redirect("/login?redirect=/resources/new");
 });
 
-// UNRESTRICTED ROUTES
+// # UNRESTRICTED ROUTES
 router.get("/", function (req, res, next) {
   console.log("request from: " + req.user);
 
@@ -51,13 +51,15 @@ router.get("/", function (req, res, next) {
     });
 });
 
+// Needs complete restructuring - we're supposed to be compressing resources
+// and then downloading
 router.get("/download/:fname", function (req, res) {
   const filename = req.params.fname;
   const originalName = filename.replace(/(.*?)-/, "");
   res.download(__dirname + "/../public/uploads/" + filename, originalName);
 });
 
-router.get("/:resourceId", function (req, res, next) {
+router.get("/:resourceID", function (req, res, next) {
   res.render("resource");
 });
 

@@ -10,4 +10,7 @@ block content
             label(for="password") Password
             input(type="password", name="password")
         input(type="submit" value="Login").button
-        p Don't have an account yet? #[a(href='/register') Start learning now].
+        if redirect
+            p Don't have an account yet? #[a(href='/register?redirect='+redirect) Start learning now].
+        else
+            p Don't have an account yet? #[a(href='/register') Start learning now].

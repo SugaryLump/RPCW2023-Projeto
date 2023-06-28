@@ -7,15 +7,16 @@ var upload = require("./upload");
 var ObjectId = require("mongodb").ObjectId;
 
 router.get("/", auth.isLogged, async function (req, res) {
-  res.render("profile", { user: req.user });
+  res.render("profile", { user: res.locals.user });
 });
 
 router.post("/", auth.isLogged, async function (req, res) {
   // TODO update specific fields user
   try {
-    console.log(req.user._id);
+    console.log(res.locals.user._id);
+    console.log(req.body.affiliation);
     var user = await userModel.findOneAndUpdate(
-      { _id: req.user._id },
+      { _id: res.locals.user._id },
       {
         $set: {
           email: req.body.email,
@@ -28,7 +29,12 @@ router.post("/", auth.isLogged, async function (req, res) {
     res.render("profile", { user: user, result: "Updated Successfully" });
   } catch (err) {
     console.log(err);
-    res.render("profile", { user: req.user, result: err });
+    res.render("profile", { user: res.locals.user, result: err });
   }
 });
-module.exports = router;
+
+router.get("/", async function (req, res) {
+  res.redirect("/login");
+});
+
+module.exports = router

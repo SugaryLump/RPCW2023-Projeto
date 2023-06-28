@@ -7,11 +7,16 @@ var jwt = require("jsonwebtoken");
 var auth = require("../shared/auth");
 
 router.all("/", auth.isLogged, function (req, res, next) {
-  res.redirect("/");
+  if (req.params.redirect) {
+    res.redirect(req.params.redirect);
+  }
+  else {
+    res.redirect("/");
+  }
 });
 
 router.get("/", function (req, res, next) {
-  res.render("register");
+  res.render("register", {redirect:req.query.redirect});
 });
 
 router.post("/", function (req, res, next) {
@@ -33,6 +38,7 @@ router.post("/", function (req, res, next) {
               ": " +
               String(err),
           ],
+          redirect:req.query.redirect
         });
       else {
         passport.authenticate("local", (err, user, info) => {

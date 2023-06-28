@@ -27,6 +27,7 @@ var loginRouter = require("./routes/login");
 var registerRouter = require("./routes/register");
 var resourceRouter = require("./routes/resource");
 var profileRouter = require("./routes/profile");
+var auth = require("./shared/auth")
 
 var app = express();
 
@@ -63,6 +64,9 @@ app.use(passport.session());
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(auth.getUser)
+app.use(auth.getResource)
 
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);

@@ -19,4 +19,7 @@ block content
             label(for="password_confirm") Confirm Password
             input(type="password", name="password_confirm")
         input(type="submit" value="Register").button
-        p Already have an account? #[a(href='/login') Login here].
+        if redirect
+            p Already have an account? #[a(href='/login?redirect='+redirect) Login here].
+        else
+            p Already have an account? #[a(href='/login') Login here].
