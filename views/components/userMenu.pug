@@ -1,0 +1,8 @@
+.flex.flex-col.gap-2(x-data="{open: false}").relative
+  a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
+    | #{user.name}
+    i(data-feather="chevron-down")
+  .absolute.bg-white.shadow-lg.rounded-md.text-black.py-2.flex.flex-col.gap-2.items-center.text-sm.mt-10.w-full.origin-top-right.right-0(x-cloak x-show="open" x-on:click.outside="open = false")
+    a.text-black(href="/profile") Edit profile
+    a.text-black(href="/logout") Logout
+  

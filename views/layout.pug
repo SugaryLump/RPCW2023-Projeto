@@ -3,6 +3,7 @@ html
   head
     title LearnVault
     link(rel='stylesheet', href='/stylesheets/dist.css')
+    script(src='/js/alpine.js' defer)
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
@@ -15,11 +16,12 @@ html
         block nav
       .flex.items-center
         if user
-          h2
-            a(href='/profile')=user.name
-          h2
-            a(href='/logout' class='mr-4') Logout
+          include components/userMenu
         else
             a(href='/login' class='ml-4') Login
     .container.mx-auto.px-4
       block content
+
+    script(src='/js/feather.min.js')
+    script 
+      | feather.replace()

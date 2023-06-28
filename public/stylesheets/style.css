@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-input, select, textarea {
+input,
+select,
+textarea {
   @apply px-2 py-1 bg-slate-200 border-slate-300 border-solid border rounded-md;
 }
 
@@ -28,4 +30,8 @@ h2 {
 
 a.text-button {
   @apply text-slate-800 no-underline text-4xl bg-white px-4 text-center rounded-full;
+}
+
+.text-button.small {
+  @apply text-2xl;
 }
