@@ -7,6 +7,11 @@ module.exports.isAdmin = async (userID) => {
     return level
 }
 
+module.exports.get = async (userID) => {
+    let user = await userModel.findOne({_id:userID})
+    return user
+}
+
 module.exports.updateLastActiveAt  =  async (user) => {
     await userModel.findOneAndUpdate({_id: user._id}, {$set: { lastActiveAt: Date.now()} }) ;
 }

@@ -13,19 +13,19 @@ block content
         input(type='file' name='resource', required='required')
       .flex.flex-col.mb-4
         label
-          b Titulo
+          b Title
         input(type='text' name='title', required='required')
       .flex.flex-col.mb-4
         label
-          b Subtitulo
+          b Subtitle
         input(type='text' name='subtitle')
       .flex.flex-col.mb-4
         label
-          b Descrição
+          b Description
         textarea(name='description')
       .flex.flex-col.mb-4
         label
-          b Tipo de Recurso
+          b Resource Type
         select(name='type', required='required')
           option(value='report') Relatório
           option(value='thesis') Tese
@@ -36,25 +36,21 @@ block content
           option(value='solved_exercise') Problema Resolvido
           option(value='application') Aplicação
           option(value='other') Outro
-      .flex.flex-col.mb-4
-        label
-          b Data Criação
-        input(type='date' name='creationDate', required='required')
     fieldset.contents.mb-6
-      legend.text-2xl Visibilidade
+      legend.text-2xl Visibility
       .flex.flex-col.mb-4
         .flex.gap-2
           input(type='radio' name='visibility' value='public' checked='checked')
-          label(for='public') Público
+          label(for='public') Public
         .flex.gap-2
           input(type='radio' name='visibility' value='private')
-          label(for='private') Privado
+          label(for='private') Private
     .flex.flex-col.mb-4
       label
-        b Autor
-      input(type='text' name='author')
+        b Authors (';' separated)
+      input(type='text' name='authors')
     .flex.flex-col.mb-4
       label
-        b Hashtags
+        b Hashtags (';' separated)
       input(type='text' name='hashtags')
     input.button(type='submit' value='Send')

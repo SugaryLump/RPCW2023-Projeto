@@ -6,12 +6,8 @@ var passport = require("passport");
 var jwt = require("jsonwebtoken");
 var auth = require("../shared/auth");
 
-router.get("/", auth.isLogged, function (req, res, next) {
-  res.render("index", { title: "LearnVault" });
-});
-
 router.get("/", function (req, res, next) {
-  res.redirect("/login");
+  res.redirect("/resources");
 });
 
 router.get("/logout", auth.isLogged, function (req, res, next) {

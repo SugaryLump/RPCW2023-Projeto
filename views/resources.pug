@@ -14,22 +14,22 @@ block content
           th Title
           th Type
           th Description
-          th Creation Date
+          th Registration Date
           th Visibility
+          th Poster
           th Author
-          th Filename
-          th
+          th Download
 
         each r in resources
           tr
             td= r.title
             td= r.type
             td= r.description
-            td= r.creationDate
+            td= r.registrationDate
             if r.isPublic
               td Public
             else
               td Private
-            td= r.author
-            td= r.filename
-            td #[a.w3-button.w3-round.w3-blue(href="/resources/download/"+ r.filename) Download]
+            td= r.user.name
+            td= r.authors
+            td #[a.w3-button.w3-round.w3-blue(href="/resources/download/"+ r._id) Download]

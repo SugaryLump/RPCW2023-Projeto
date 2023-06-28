@@ -2,15 +2,14 @@ var mongoose = require("mongoose");
 
 var resourceSchema = mongoose.Schema({
   title: String,
-  subtitle: String,
+  subtitle: {type: String, default: ""},
   type: String,
   description: String,
-  creationDate: Date,
-  registrationDate: Date,
+  registrationDate: {type: Date, default: Date.now},
   isPublic: Boolean,
-  author: String,
+  authors: [String],
   hashTags: [String],
-  filename: String,
+  posterID: String
 });
 
 module.exports = mongoose.model("resource", resourceSchema);
