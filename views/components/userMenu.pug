@@ -1,8 +1,29 @@
-.flex.flex-col.gap-2(x-data="{open: false}").relative
-  a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
-    | #{user.name}
-    i(data-feather="chevron-down")
-  .absolute.bg-white.shadow-lg.rounded-md.text-black.py-2.flex.flex-col.gap-2.items-center.text-sm.mt-10.w-full.origin-top-right.right-0(x-cloak x-show="open" x-on:click.outside="open = false")
-    a.text-black(href="/profile") Edit profile
-    a.text-black(href="/logout") Logout
-  
+.flex.flex.gap-2
+  .flex.flex-col.gap-2(x-data="{open: true}").relative
+    a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
+      i(data-feather="bell")
+      | #{notifications.length}
+    .relative.flex.flex-col.items-center(x-show="open" x-cloak x-on:click.outside="open = false")
+      .absolute.top-0.flex.flex-col.items-center 
+        .w-5.h-5.-mb-3.rotate-45.bg-white.shadow-md
+        .relative.z-10.bg-white.w-80.shadow-md.rounded-lg.text-black
+          h2.p-2.text-center Notificações
+          hr.border-gray-200
+          .h-80.overflow-y-scroll.divide-y.divide-gray-200
+            if notifications 
+              each notification in notifications
+                div.p-2
+                  h3.text-2xl= notification.title
+                  p= notification.body
+            else 
+              p No notifications
+
+  .flex.flex-col.gap-2(x-data="{open: false}").relative
+    a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
+      | #{user.name}
+      i(data-feather="chevron-down")
+    .absolute.bg-white.shadow-lg.rounded-md.text-black.p-2.flex.flex-col.gap-2.items-center.text-sm.mt-10.w-full.origin-top-right.right-0.text-center(x-cloak x-show="open" x-on:click.outside="open = false")
+      a.text-black(href="/profile") Edit profile
+      if user.level == "admin"
+        a.text-black(href="/notifications/new") Send notification
+      a.text-black(href="/logout") Logout

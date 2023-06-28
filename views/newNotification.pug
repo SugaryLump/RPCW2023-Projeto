@@ -1,0 +1,28 @@
+extends layout 
+
+block nav
+  h2 New notification
+
+block content
+  form(method='POST' action='/notifications/new').flex.flex-col.gap-2
+    .flex.flex-col
+      label(for='title') Title
+      input#title(type='text' name='title' required)
+    .flex.flex-col
+      label(for='body') Body
+      textarea#body(name='body' required)
+    .flex.flex-col.w-full
+      label(for='link') Link
+      .flex.flex-row(x-data="{enabled: false}").w-full
+        label(for="enable-link").bg-blue-400.text-white.flex.flex-row.gap-2.items-center.p-2.rounded-l-md
+          | Enable link
+          input(type='checkbox' name="enableLink" id='enable-link' x-model="enabled" x-on:click="enabled = !enabled")
+        input(type="text" name="link" placeholder="Link" x-bind:disabled="!enabled").grow.rounded-l-none
+    .flex.flex-col.w-full
+      label(for='link') Users
+      .flex.flex-row(x-data="{enabled: false}").w-full
+        label(for="enable-user").bg-blue-400.text-white.flex.flex-row.gap-2.items-center.p-2.rounded-l-md
+          | Send to single user
+          input(type='checkbox' name="enableUser" id='enable-user' x-model="enabled" x-on:click="enabled = !enabled")
+        input(type="text" name="user" placeholder="User email" x-bind:disabled="!enabled").grow.rounded-l-none
+    input(type='submit' value="Send notification").button

@@ -2,6 +2,27 @@ var mongoose = require("mongoose"),
   Schema = mongoose.Schema,
   passportLocalMongoose = require("passport-local-mongoose");
 
+var NotificationSchema = new Schema({
+  title: {
+    type: String,
+    validate: {
+      validator: t => t.length > 0,
+      message: props => `${props.value} is not a valid title!`
+    },
+    required: true
+  },
+  body: String,
+  read: {
+    type: Boolean,
+    default: false,
+  },
+  link: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 var User = new Schema(
   {
     email: {
@@ -28,6 +49,9 @@ var User = new Schema(
       type: Boolean,
       default: true,
     },
+    notifications: {
+      type: [NotificationSchema],
+    }
   },
   { timestamps: true }
 );

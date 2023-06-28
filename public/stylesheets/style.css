@@ -5,7 +5,7 @@
 input,
 select,
 textarea {
-  @apply px-2 py-1 bg-slate-200 border-slate-300 border-solid border rounded-md;
+  @apply px-2 py-1 bg-slate-200 border-slate-300 border-solid border rounded-md disabled:bg-slate-300 disabled:cursor-not-allowed;
 }
 
 textarea {
