@@ -14,7 +14,6 @@ router.post("/", auth.isLogged, async function (req, res) {
   // TODO update specific fields user
   try {
     console.log(req.user._id);
-    console.log(req.body.affiliation);
     var user = await userModel.findOneAndUpdate(
       { _id: req.user._id },
       {

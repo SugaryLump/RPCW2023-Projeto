@@ -14,6 +14,7 @@ var mongoose = require("mongoose");
 var mongoDB = process.env.MONGODB_URL || "mongodb://localhost:27017/learnvault";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
+mongoose.set("setDefaultsOnInsert", false);
 db.on("error", function () {
   console.log("MongoDB connection error");
 });

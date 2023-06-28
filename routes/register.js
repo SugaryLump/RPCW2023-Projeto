@@ -49,6 +49,7 @@ router.post("/", function (req, res, next) {
                   .redirect("/");
               }
             );
+            userController.updateLastActiveAt(user);
           });
         })(req, res, next);
       }
