@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "concurrently 'nodemon ./bin/www' 'tailwindcss -i public/stylesheets/style.css -o public/stylesheets/dist.css'"
+    "dev": "concurrently 'nodemon ./bin/www' 'tailwindcss -i public/stylesheets/style.css -o public/stylesheets/dist.css --watch'"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
