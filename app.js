@@ -25,6 +25,7 @@ var indexRouter = require("./routes/index");
 var loginRouter = require("./routes/login");
 var registerRouter = require("./routes/register");
 var resourceRouter = require("./routes/resource");
+var profileRouter = require("./routes/profile");
 
 var app = express();
 
@@ -65,6 +66,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/resources", resourceRouter);
+app.use("/profile", profileRouter);
 app.use("/", indexRouter);
 
 // catch 404 and forward to error handler

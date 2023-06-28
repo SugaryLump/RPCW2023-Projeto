@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    form#register-form(method="post").flex.flex-col.gap-2
+        h1 Profile
+        .flex.flex-col
+            label(for="email" type="email") E-mail
+            input(name="email" value=user.email)
+        .flex.flex-col
+            label(for="name") Name
+            input(name="name" value=user.name)
+        .flex.flex-col
+            label(for="name") Affiliation
+            input(name="affiliation" value=user.affiliation)
+        .flex.flex-col
+            label(for="password") Password
+            input(type='password', name="password")
+        .flex.flex-col
+            label(for="password_confirm") Confirm Password
+            input(type="password", name="password_confirm")
+        .flex.flex-col
+            label(for="name") Last Active
+            input(name="lastActiveAt" value=user.lastActiveAt readonly)
+        .flex.flex-col
+            label(for="name") Register Date
+            input(name="registerDate" value=user.registerDate readonly)
+        .flex.flex-col
+            label(for="name") Level
+            input(name="level" value=user.level readonly)
+        input(type="submit" value="Edit").button
+        if result
+            p= result

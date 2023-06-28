@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title= title
+    title LearnVault
     link(rel='stylesheet', href='/stylesheets/dist.css')
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
@@ -14,6 +14,12 @@ html
       div
         block nav
       .flex.items-center
-        h2 todo user
+        if user
+          h2
+            a(href='/profile')=user.name
+          h2
+            a(href='/logout' class='mr-4') Logout
+        else
+            a(href='/login' class='ml-4') Login
     .container.mx-auto.px-4
       block content
