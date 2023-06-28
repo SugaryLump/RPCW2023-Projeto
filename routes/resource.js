@@ -37,7 +37,6 @@ router.all("/new", function (req, res, next) {
 
 // UNRESTRICTED ROUTES
 router.get("/", function (req, res, next) {
-  var d = new Date().toISOString().substring(0, 16);
   console.log("request from: " + req.user);
 
   resourceController
@@ -45,7 +44,6 @@ router.get("/", function (req, res, next) {
     .then((resources) => {
       res.render("resources", {
         resources: resources,
-        d: d,
       });
     })
     .catch((err) => {

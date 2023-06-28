@@ -8,6 +8,7 @@ module.exports.isAdmin = function (req, res, next) {
     jwt.verify(tok, "learnvault2023", async function (err, payload) {
       if (payload) {
         req.user = await userController.get(payload._id);
+        res.locals.user = req.user;
         if (req.user.level == "admin") {
           next();
         }
@@ -23,6 +24,7 @@ module.exports.isLogged = function (req, res, next) {
     jwt.verify(tok, "learnvault2023", async function (err, payload) {
       if (payload) {
         req.user = await userController.get(payload._id);
+        res.locals.user = req.user;
         next();
       } else {
         console.log(err);
@@ -41,6 +43,7 @@ module.exports.isPoster = function (req, res, next) {
     jwt.verify(tok, "learnvault2023", async function (err, payload) {
       if (payload) {
         req.user = await userController.get(payload._id);
+        res.locals.user = req.user;
         if (req.user._id == req.params.resourceID) {
           next();
         }
