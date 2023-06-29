@@ -14,7 +14,7 @@ var resourceSchema = mongoose.Schema({
     type: [{
       text: String,
       rating: Number,
-      posterID: String 
+      posterID: mongoose.Types.ObjectId 
     }],
     default: []
   }

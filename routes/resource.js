@@ -5,6 +5,7 @@ var userController = require('../controllers/user');
 var auth = require("../shared/auth");
 var upload = require("../shared/upload");
 var bag = require("../shared/bag");
+var mongoose = require("mongoose")
 
 // # AUTHENTICATED ROUTES
 // ## New Resource
@@ -88,7 +89,7 @@ router.get("/:resourceID", auth.getResource, function (req, res, next) {
 
 router.post("/:resourceID", auth.getResource, auth.isLogged, async function (req, res, next) {
   comment = req.body
-  comment.posterID = res.locals.user._id
+  comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id)
   resource = await resourceController.addComment(res.locals.resource._id, comment)
   res.redirect(req.originalUrl);
 });
