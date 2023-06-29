@@ -66,4 +66,4 @@ block content
         div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
           p= comment.text
           if user && (user.level == "admin" || String(comment.posterID) == String(user._id))
-          a(href="/resources/deletecomment/" + resource._id).text-xs.text-red-500 Delete
+            a(href="/resources/deletecomment/" + resource._id + "?posterID=" + user._id).text-xs.text-red-500 Delete

@@ -151,7 +151,7 @@ router.get("/:resourceID", auth.getResource, async function (req, res, next) {
 router.post(
   "/:resourceID/comment",
   auth.getResource,
-  auth.isLogged,
+  auth.canComment,
   async function (req, res, next) {
     comment = req.body;
     comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id);
@@ -173,8 +173,33 @@ router.post(
   }
 );
 
-router.post("/:resourceID", auth.getResource, async function (req, res, next) {
-  res.redirect("/login?redirect=" + req.originalUrl);
+router.post(
+  "/:resourceID/comment",
+  auth.getResource,
+  async function (req, res, next) {
+    res.redirect("/login?redirect=/resources/" + res.locals.resource._id);
 });
+
+router.get("/delete/:resourceID", auth.getResource, auth.canEditResource, async function(req, res, next) {
+  const status = await resourceController.remove(
+    new mongoose.Types.ObjectId(res.locals.resource._id)
+  )
+  res.redirect("/")
+})
+
+router.get("/deletecomment/:resourceID", auth.getResource, auth.canEditComment, async function(req, res, next) {
+  const status = await resourceController.removeComment(
+    res.locals.resource._id,
+    new mongoose.Types.ObjectId(req.query.posterID)
+  )
+  res.redirect("/resources/" + req.params.resourceID)
+})
+
+router.get("/togglevis/:resourceID", auth.getResource, auth.canEditResource, async function(req, res, next) {
+  const status = await resourceController.toggleVisibility(
+    res.locals.resource._id,
+  )
+  res.redirect("/resources/" + req.params.resourceID)
+})
 
 module.exports = router;

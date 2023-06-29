@@ -72,13 +72,14 @@ module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
   resources = resources.filter((r) => {
     vis_filter = r.isPublic ||
                  (viewerUser && 
-                    (viewerUser.level == "admin" || viewerUser._id == r.publisher._id))
+                    (viewerUser.level == "admin" || viewerUser._id == r.posterID))
     
     rating_filter = r.rating >= filterObj.minRating && r.rating <= filterObj.maxRating
     tag_filter = filterObj.tags.every(tag => {return r.hashTags.includes(tag)})
     date_filter = r.registrationDate >= filterObj.minDate && r.registrationDate <= filterObj.maxDate
     pub_filter = r.publisher.name.includes(filterObj.publisher)
     title_filter = r.title.includes(filterObj.title)
+    console.log(vis_filter)
     return vis_filter && rating_filter && tag_filter && date_filter && pub_filter && title_filter
   })
 
@@ -141,6 +142,10 @@ module.exports.get = async (resourceID) => {
     { $unwind: "$publisher"},
   ])
 
+  if (resource.length == 0) {
+    throw new Error("Resource not found")
+  }
+
   resource[0].comments = await Promise.all(resource[0].comments.map(async (comment) => {
     var user = await userController.get(comment.posterID)
     return {
@@ -149,6 +154,26 @@ module.exports.get = async (resourceID) => {
     }
   }))
 
-
   return resource[0]
+}
+
+module.exports.remove = async (resourceID) => {
+  const status = await resourceModel.deleteOne({_id: resourceID})
+  return status
+}
+
+module.exports.removeComment = async (resourceID, posterID) => {
+  const status = await resourceModel.updateMany(
+    { $pull: {
+        "comments": {"posterID": posterID}
+    }}
+  )
+
+  return status
+}
+
+module.exports.toggleVisibility = async(resourceID) => {
+  const resource = await resourceModel.findById(resourceID)
+  resource.isPublic = !resource.isPublic
+  return await resource.save()
 }

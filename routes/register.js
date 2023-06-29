@@ -49,10 +49,14 @@ router.post("/", function (req, res, next) {
               "learnvault2023",
               { expiresIn: 3600 },
               function (e, token) {
+                url = "/"
+                if (req.query.redirect) {
+                  url =req.query.redirect
+                }
                 res
                   .cookie("access_token_learnvault", token)
                   .status(200)
-                  .redirect("/");
+                  .redirect(url);
               }
             );
             userController.updateLastActiveAt(user);

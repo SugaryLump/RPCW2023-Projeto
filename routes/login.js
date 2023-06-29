@@ -41,11 +41,16 @@ router.post("/", function (req, res, next) {
         { expiresIn: "3h" },
         function (e, token) {
           if (e) res.render("login", { alerts: [String(err)], redirect:req.query.redirect });
-          else
+          else {
+            url = "/"
+            if (req.query.redirect) {
+              url = req.query.redirect
+            }
             res
               .cookie("access_token_learnvault", token)
               .status(200)
-              .redirect("/");
+              .redirect(url);
+          }
         }
       );
       userController.updateLastActiveAt(user);
