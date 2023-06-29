@@ -29,6 +29,13 @@ module.exports.isPoster = async (resourceID, userID) => {
   return posterID == userID;
 };
 
+module.exports.addComment = async (resourceID, comment) => {
+  return await resourceModel.findOneAndUpdate(
+    {_id: resourceID},
+    {$push: {comments: comment}}
+  )
+}
+
 module.exports.get = async (resourceID) => {
   let resource = await resourceModel.aggregate([
     { $match: {_id: new mongoose.Types.ObjectId(resourceID) }},

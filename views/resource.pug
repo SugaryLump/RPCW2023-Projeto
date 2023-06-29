@@ -50,8 +50,8 @@ block content
           .flex-col.flex-1
             p= comment.poster.name
             if comment.rating
-              p= "Rating: " + resource.rating
+              p= "Rating: " + comment.rating
             else
               p= "Rating: Unrated"
         div(class=["basis-4/5"]).flex-col.p-4
-          p= resource.description
+          p= comment.text
