@@ -3,13 +3,13 @@ var router = express.Router();
 var resourceController = require("../controllers/resource");
 var resourceModel = require("../models/resource");
 var auth = require("../shared/auth");
-var upload = require("./upload");
+var upload = require("../shared/upload");
+var bag = require("../shared/bag");
 
 // # AUTHENTICATED ROUTES
 // ## New Resource
 router.get("/new", auth.isLogged, function (req, res, next) {
-  var d = new Date().toISOString().substring(0, 16);
-  res.render("addResourceForm", { d: d });
+  res.render("addResourceForm");
 });
 
 // severely lacking in error handling!!
@@ -17,7 +17,7 @@ router.post(
   "/new",
   auth.isLogged,
   upload.single("resource"),
-  function (req, res, next) {
+  async function (req, res, next) {
     resource = req.body;
     resource.authors = resource.authors
       .split(";")
@@ -25,9 +25,23 @@ router.post(
     resource.hashtags = resource.hashtags
       .split(";")
       .map((hashtag) => hashtag.trim());
-    resource.posterID = req.user._id;
-    resource = resourceController.insert(resource);
-    res.redirect("/resources/" + resource._id);
+    resource.posterID = res.locals.user._id;
+    try {
+      var r = await bag.validateFile(req.file);
+      if (r) {
+        resource = resourceController.insert(resource);
+        res.redirect("/resources/" + resource._id);
+      } else {
+        res.locals.error = "Wrong File Type";
+        res.locals.resource = resource;
+        res.render("addResourceForm");
+      }
+    } catch (err) {
+      res.render("error", {
+        error: err,
+        message: "Error while uploading resource",
+      });
+    }
   }
 );
 

@@ -3,7 +3,6 @@ var router = express.Router();
 var auth = require("../shared/auth");
 var userController = require("../controllers/user");
 var userModel = require("../models/user");
-var upload = require("./upload");
 var ObjectId = require("mongodb").ObjectId;
 
 router.get("/", auth.isLogged, async function (req, res) {
@@ -37,4 +36,4 @@ router.get("/", async function (req, res) {
   res.redirect("/login");
 });
 
-module.exports = router
+module.exports = router;
