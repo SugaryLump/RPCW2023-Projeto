@@ -22,14 +22,14 @@ router.post(
     resource.authors = resource.authors
       .split(";")
       .map((author) => author.trim());
-    resource.hashtags = resource.hashtags
+    resource.hashtags = resource.hashTags
       .split(";")
       .map((hashTag) => hashTag.trim());
     resource.posterID = res.locals.user._id;
     try {
       var r = await bag.validateFile(req.file);
       if (r) {
-        resource = resourceController.insert(resource);
+        resource = await resourceController.insert(resource);
         
         if (resource.isPublic) {
           await userController.sendNotification({
@@ -84,6 +84,17 @@ router.get("/download/:fname", function (req, res) {
 
 router.get("/:resourceID", auth.getResource, function (req, res, next) {
   res.render("resource");
+});
+
+router.post("/:resourceID", auth.getResource, auth.isLogged, async function (req, res, next) {
+  comment = req.body
+  comment.posterID = res.locals.user._id
+  resource = await resourceController.addComment(res.locals.resource._id, comment)
+  res.redirect(req.originalUrl);
+});
+
+router.post("/:resourceID", auth.getResource, async function (req, res, next) {
+  res.redirect("/login?redirect=" + req.originalUrl);
 });
 
 module.exports = router;
