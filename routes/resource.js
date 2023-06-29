@@ -93,4 +93,8 @@ router.post("/:resourceID", auth.getResource, auth.isLogged, async function (req
   res.redirect(req.originalUrl);
 });
 
+router.post("/:resourceID", auth.getResource, async function (req, res, next) {
+  res.redirect("/login?redirect=" + req.originalUrl);
+});
+
 module.exports = router;
