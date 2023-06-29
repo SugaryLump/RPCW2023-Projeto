@@ -3,7 +3,7 @@ extends layout
 block content 
   h1 Admin panel
 
-  h2 Manage users
+  h2.my-2 Manage users
   table.w-full
     thead
       th.px-4.py-2.border.border-gray-400.bg-gray-100 Name
@@ -23,7 +23,7 @@ block content
               a(href=`/user/${user._id}/edit`) Edit
               a(href=`/user/${user._id}/delete`).text-red-500 Delete
   
-  h2 Manage resources
+  h2.my-2 Manage resources
   each resource in resources
     .flex.border.border-primary-600.justify-self-stretch.shadow-md
       div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
