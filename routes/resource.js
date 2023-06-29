@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
 var resourceController = require("../controllers/resource");
-var userController = require('../controllers/user');
+var userController = require("../controllers/user");
 var auth = require("../shared/auth");
 var upload = require("../shared/upload");
 var bag = require("../shared/bag");
-var mongoose = require("mongoose")
+var mongoose = require("mongoose");
 
 // # AUTHENTICATED ROUTES
 // ## New Resource
@@ -23,24 +23,24 @@ router.post(
     resource.authors = resource.authors
       .split(";")
       .map((author) => author.trim())
-      .filter(t => length(t));
+      .filter((t) => t.length);
     resource.hashtags = resource.hashTags
       .split(";")
       .map((hashTag) => hashTag.trim())
-      .filter(t => t);
+      .filter((t) => t);
     resource.posterID = res.locals.user._id;
     resource.isPublic = req.body.visibility == "public";
     try {
       var r = await bag.validateFile(req.file);
       if (r) {
         resource = await resourceController.insert(resource);
-        console.log(resource)
-        
+        console.log(resource);
+
         if (resource.isPublic) {
           await userController.sendNotification({
             title: "New resource posted",
             body: `New resource "${resource.title}" has been posted`,
-            link: `/resources/${resource._id}`
+            link: `/resources/${resource._id}`,
           });
         }
 
@@ -65,8 +65,8 @@ router.all("/new", function (req, res, next) {
 
 // # UNRESTRICTED ROUTES
 router.get("/", async function (req, res, next) {
-  sortObj = null
-  filterObj = null
+  sortObj = null;
+  filterObj = null;
   if (Object.keys(req.query).length > 0) {
     filterObj = {
       publisher: req.query.publisher,
@@ -75,36 +75,42 @@ router.get("/", async function (req, res, next) {
       title: req.query.title,
       minRating: 0,
       maxRating: 5,
-      tags: req.query.tags.split(";").map((hashTag) => hashTag.trim()).filter(t => t)
-    }
+      tags: req.query.tags
+        .split(";")
+        .map((hashTag) => hashTag.trim())
+        .filter((t) => t),
+    };
   }
   if (req.query.sort) {
-    sortObj = {}
-    sortObj[req.query.sort] = 1
+    sortObj = {};
+    sortObj[req.query.sort] = 1;
   }
 
   if (req.query.after) {
-    filterObj.minDate = Date.parse(req.query.after)
+    filterObj.minDate = Date.parse(req.query.after);
   }
 
   if (req.query.before) {
-    filterObj.maxDate = Date.parse(req.query.before)
+    filterObj.maxDate = Date.parse(req.query.before);
   }
 
   if (req.query.minRating) {
-    filterObj.minRating = req.query.minRating
+    filterObj.minRating = req.query.minRating;
   }
 
   if (req.query.maxRating) {
-    filterObj.maxRating = req.query.maxRating
+    filterObj.maxRating = req.query.maxRating;
   }
-  console.dir(sortObj)
-  console.dir(filterObj)
+  console.dir(sortObj);
+  console.dir(filterObj);
   try {
-    var resources = await resourceController.list(res.locals.user, sortObj, filterObj)
-    res.render("resources", {resources: resources, query: req.query})
-  }
-  catch (err) {
+    var resources = await resourceController.list(
+      res.locals.user,
+      sortObj,
+      filterObj
+    );
+    res.render("resources", { resources: resources, query: req.query });
+  } catch (err) {
     res.render("error", { error: err, message: "Erro ao listar recursos" });
   }
 });
@@ -121,19 +127,30 @@ router.get("/:resourceID", auth.getResource, function (req, res, next) {
   res.render("resource");
 });
 
-router.post("/:resourceID/comment", auth.getResource, auth.isLogged, async function (req, res, next) {
-  comment = req.body
-  comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id)
-  resource = await resourceController.addComment(res.locals.resource._id, comment)
-  
-  await userController.sendNotification({
-    title: `New comment in "${resource.title}"`,
-    body: `${res.locals.user.name}: "${comment.text}"`,
-    link: `/resources/${resource._id}`
-  }, {_id: resource.posterID})
+router.post(
+  "/:resourceID/comment",
+  auth.getResource,
+  auth.isLogged,
+  async function (req, res, next) {
+    comment = req.body;
+    comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id);
+    resource = await resourceController.addComment(
+      res.locals.resource._id,
+      comment
+    );
 
-  res.redirect("/resources/" + res.locals.resource._id);
-});
+    await userController.sendNotification(
+      {
+        title: `New comment in "${resource.title}"`,
+        body: `${res.locals.user.name}: "${comment.text}"`,
+        link: `/resources/${resource._id}`,
+      },
+      { _id: resource.posterID }
+    );
+
+    res.redirect("/resources/" + res.locals.resource._id);
+  }
+);
 
 router.post("/:resourceID", auth.getResource, async function (req, res, next) {
   res.redirect("/login?redirect=" + req.originalUrl);
