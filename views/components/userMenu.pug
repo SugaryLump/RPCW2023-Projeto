@@ -15,10 +15,18 @@
           .h-80.overflow-y-scroll.divide-y.divide-gray-200
             template(x-if="notifications.length > 0")
               template(x-for="notification in notifications")
-                div.p-2
-                  h3.text-2xl(x-text="notification.title")
-                  p(x-text="notification.body")
-                  p.text-sm.text-gray-600(x-text="new Intl.DateTimeFormat('pt-PT').format(new Date(notification.createdAt))")
+                div
+                  template(x-if="notification.link")
+                    a(:href="notification.link" class="hover:bg-gray-200 block no-underline")
+                      div.p-2
+                        h3.text-2xl(x-text="notification.title")
+                        p(x-text="notification.body")
+                        p.text-sm.text-gray-600(x-text="new Intl.DateTimeFormat('pt-PT').format(new Date(notification.createdAt))")
+                  template(x-if="notification.link == undefined")
+                    div.p-2
+                      h3.text-2xl(x-text="notification.title")
+                      p(x-text="notification.body")
+                      p.text-sm.text-gray-600(x-text="new Intl.DateTimeFormat('pt-PT').format(new Date(notification.createdAt))")
             template(x-if="notifications.length == 0")
               p.p-2 No notifications
 

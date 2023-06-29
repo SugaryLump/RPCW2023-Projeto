@@ -12,8 +12,7 @@ html
       each alert in alerts
         .alert=alert
     nav.flex.bg-primary-700.p-4.text-white.shadow-md.items-center.justify-between.mb-4
-      div
-        block nav
+      block nav
       .flex.items-center
         if user
           include components/userMenu

@@ -52,7 +52,7 @@ block content
         .flex.border.border-primary-600.justify-self-stretch.shadow-md
           div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
             if resource.rating
-              p #[b= resource.rating]
+              p #[b= resource.rating.toFixed(2)]
             else
                p
                 b Unrated
