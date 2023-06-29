@@ -32,15 +32,19 @@ router.post("/", auth.isLogged, async function (req, res) {
 
 router.post('/password', auth.isLogged, async (req, res) => {
   try {
-    if (req.body.new_password != req.body.new_password_confirm) {
+    if (!req.body.new_password || !req.body.new_password_confirm || !req.body.password) {
+      req.flash('error', "All fields are mandatory")
+    } else if (req.body.new_password != req.body.new_password_confirm) {
       req.flash('error', "Passwords must match")
     } else if (req.body.new_password.length == 0) {
       req.flash('error', 'Password must not be empty')
     } else {
-      
+      await res.locals.user.changePassword(req.body.password, req.body.new_password)
+      req.flash('success', 'Password changed')
     }
   } catch (err) {
-
+    console.log(err)
+    req.flash('error', err.toString());
   }
 
   res.redirect('/profile');

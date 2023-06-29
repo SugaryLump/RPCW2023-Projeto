@@ -25,6 +25,11 @@ html
             p.text-xl Error
             each error in errors
               p= error
+      if successes.length > 0
+        .rounded-md.bg-green-200.w-full.p-2.text-green-800.border.border-green-800
+            p.text-xl Success
+            each success in successes
+              p= success
       block content
 
     script(src='/js/feather.min.js')
