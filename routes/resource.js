@@ -144,7 +144,7 @@ router.get("/:resourceID", auth.getResource, async function (req, res, next) {
     "/app/public/uploads/" + resource.directory
   );
   res.render("resource", {
-    tree: tree,
+    tree: tree.split("\n"),
   });
 });
 
