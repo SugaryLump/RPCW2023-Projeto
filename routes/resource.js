@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var resourceController = require("../controllers/resource");
-var resourceModel = require("../models/resource");
+var userController = require('../controllers/user');
 var auth = require("../shared/auth");
 var upload = require("../shared/upload");
 var bag = require("../shared/bag");
@@ -18,7 +18,7 @@ router.post(
   auth.isLogged,
   upload.single("resource"),
   async function (req, res, next) {
-    resource = req.body;
+    let resource = req.body;
     resource.authors = resource.authors
       .split(";")
       .map((author) => author.trim());
@@ -30,6 +30,15 @@ router.post(
       var r = await bag.validateFile(req.file);
       if (r) {
         resource = resourceController.insert(resource);
+        
+        if (resource.isPublic) {
+          await userController.sendNotification({
+            title: "New resource posted",
+            body: `New resource "${resource.title}" has been posted`,
+            link: `/resources/${resource._id}`
+          });
+        }
+
         res.redirect("/resources/" + resource._id);
       } else {
         res.locals.error = "Wrong File Type";
