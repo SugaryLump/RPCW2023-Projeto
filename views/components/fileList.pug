@@ -1,8 +1,8 @@
 div(x-data="{ open: false, paths: [] }")
-  button(@click="open = true", class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded")
-    | View
+  button(@click="open = true").flex.cursor-pointer.text-black.rounded-full.bg-white.py-2.px-4.text-lg.text-black.flex-1.shadow-md.w-full
+    span.text-center.w-full View files
 
-  div(x-show="open", class="fixed z-10 inset-0 overflow-y-auto")
+  div(x-show="open" x-cloak class="fixed z-10 inset-0 overflow-y-auto" x-on:click.outside="open = false")
     div(class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0")
       div(class="fixed inset-0 transition-opacity")
         div(class="absolute inset-0 bg-gray-500 opacity-75")

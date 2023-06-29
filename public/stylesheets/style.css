@@ -35,3 +35,7 @@ a.text-button {
 .text-button.small {
   @apply text-2xl;
 }
+
+[x-cloak] {
+  display: none !important;
+}

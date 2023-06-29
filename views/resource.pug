@@ -14,18 +14,16 @@ block content
           p Publisher: #{resource.publisher.name}
           p Type: #{resource.type}
           p= "Tags: " + resource['hashTags'].join("; ")
-          p Files:
-            include components/fileList
           p Size: TODO
           p Last edited: TODO
           if resource.rating
             p= "Rating: " + resource.rating.toFixed(2)
           else
             p= "Rating: Unrated"
+
         hr
-        .items-center.justify-self-stretch.flex
-          a(href="/resources/download/" + resource._id).flex.flex-1.no-underline.text-black
-            button.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md Download
+        include components/fileList
+        a(href="/resources/download/" + resource._id).flex.flex-1.no-underline.text-black.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md.w-full Download
       div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
         p= resource.description
         if user && (user.level == "admin" || String(resource.posterID) == String(user._id))
