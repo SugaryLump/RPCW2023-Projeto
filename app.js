@@ -67,7 +67,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(auth.getUser)
-app.use(auth.getResource)
+//app.use(auth.getResource)
 
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);

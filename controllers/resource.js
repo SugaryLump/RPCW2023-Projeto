@@ -24,3 +24,8 @@ module.exports.isPoster = async (resourceID, userID) => {
   let { posterID } = await resourceModel.findOne({ _id: resourceID });
   return posterID == userID;
 };
+
+module.exports.get = async (resourceID) => {
+  let resource = await resourceModel.findOne({ _id: resourceID })
+  return resource
+}

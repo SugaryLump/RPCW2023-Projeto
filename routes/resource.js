@@ -82,7 +82,8 @@ router.get("/download/:fname", function (req, res) {
   res.download(__dirname + "/../public/uploads/" + filename, originalName);
 });
 
-router.get("/:resourceID", function (req, res, next) {
+router.get("/:resourceID", auth.getResource, function (req, res, next) {
+  console.dir(req.params)
   res.render("resource");
 });
 

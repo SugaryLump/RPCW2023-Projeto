@@ -1,8 +1,14 @@
 extends layout
 
 block nav
-  .flex.gap-4
-    h2 Resource
+  .flex.gap-4.flex-col
+    h2= resource.title
+    h3= resource.subtitle
 
 block content
-  p unfinished sorry
+  .flex-col.border.border-primary-500.justify-self-stretch
+    .flex.bg-primary-500.border.border-red-500
+      .flex-1.justify-self-stretch.bg-red-500.justify-items-center.border.border-primary-5
+        button(class=["rounded-md", "border-", "hover:bg-white", "p-2"]) Download
+    .flex
+      p= resource.description

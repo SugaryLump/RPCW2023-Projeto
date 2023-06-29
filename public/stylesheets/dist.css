@@ -683,6 +683,10 @@ video {
   justify-content: space-between;
 }
 
+.justify-items-center {
+  justify-items: center;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -752,6 +756,10 @@ video {
   padding: 1rem;
 }
 
+.p-2 {
+  padding: 0.5rem;
+}
+
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -759,6 +767,18 @@ video {
 
 .text-center {
   text-align: center;
+}
+
+.pb-4 {
+  padding-bottom: 1rem;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-start {
+  text-align: start;
 }
 
 .text-2xl {
@@ -887,4 +907,9 @@ a.text-button {
 .text-button.small {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.hover\:bg-white:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }

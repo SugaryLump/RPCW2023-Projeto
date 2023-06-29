@@ -7,7 +7,6 @@ var resourceController = require("../controllers/resource");
 module.exports.getUser = function (req, res, next) {
   res.locals.user = null
   var tok = req.cookies.access_token_learnvault;
-  console.log("Finding token...")
   if (tok) {
     jwt.verify(tok, "learnvault2023", async function (err, payload) {
       if (payload) {
@@ -22,6 +21,7 @@ module.exports.getUser = function (req, res, next) {
   }
 };
 
+// AUTHENTICATION AND VERIFICATION MIDDLEWARE
 // Places the resource in res.locals.resource (null no valid resource is found)
 module.exports.getResource = async function (req, res, next) {
   try {
@@ -38,7 +38,6 @@ module.exports.getResource = async function (req, res, next) {
   next()
 }
 
-// AUTHENTICATION AND VERIFICATION MIDDLEWARE
 // Proceeds this route only if there is a res.locals.user and
 // res.locals.user has level "admin"
 module.exports.isAdmin = function (req, res, next) {
