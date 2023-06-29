@@ -37,7 +37,7 @@ script.
     Alpine.data('notifications', () => {
       return {
         open: false,
-        notifications: JSON.parse("!{JSON.stringify(notifications).replaceAll('"', '\\"')}"),
+        notifications: !{JSON.stringify(notifications)},
         readNotifications() {
           fetch('/notifications/read').then(() => {
             console.log("Cleared!")

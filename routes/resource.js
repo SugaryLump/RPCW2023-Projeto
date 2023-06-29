@@ -87,11 +87,18 @@ router.get("/:resourceID", auth.getResource, function (req, res, next) {
   res.render("resource");
 });
 
-router.post("/:resourceID", auth.getResource, auth.isLogged, async function (req, res, next) {
+router.post("/:resourceID/comment", auth.getResource, auth.isLogged, async function (req, res, next) {
   comment = req.body
   comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id)
   resource = await resourceController.addComment(res.locals.resource._id, comment)
-  res.redirect(req.originalUrl);
+  
+  await userController.sendNotification({
+    title: `New comment in "${resource.title}"`,
+    body: `${res.locals.user.name}: "${comment.text}"`,
+    link: `/resources/${resource._id}`
+  }, {_id: resource.posterID})
+
+  res.redirect("/resources/" + res.locals.resource._id);
 });
 
 router.post("/:resourceID", auth.getResource, async function (req, res, next) {
