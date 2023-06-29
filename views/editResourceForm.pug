@@ -1,0 +1,57 @@
+extends layout
+
+block nav
+  h2 Edit resource
+
+block content
+  form(method='POST').flex.flex-col
+    fieldset.contents.mb-6
+      legend.text-2xl Resource
+      .flex.flex-col.mb-4
+        label
+          b Title
+        input(type='text' name='title', required='required' value=resource.title)
+      .flex.flex-col.mb-4
+        label
+          b Subtitle
+        input(type='text' name='subtitle' value=resource.subtitle)
+      .flex.flex-col.mb-4
+        label
+          b Description
+        textarea(name='description' value=resource.description)
+      .flex.flex-col.mb-4
+        label
+          b Resource Type
+        select(name='type', required='required')
+          option(value='report') Relatório
+          option(value='thesis') Tese
+          option(value='article') Artigo
+          option(value='book') Livro
+          option(value='slides') Apresentação
+          option(value='test') Teste
+          option(value='solved_exercise') Problema Resolvido
+          option(value='application') Aplicação
+          option(value='other') Outro
+    fieldset.contents.mb-6
+      legend.text-2xl Visibility
+      .flex.flex-col.mb-4
+        .flex.gap-2
+          input(type='radio' name='visibility' value='public' checked='checked')
+          label(for='public') Public
+        .flex.gap-2
+          input(type='radio' name='visibility' value='private')
+          label(for='private') Private
+    .flex.flex-col.mb-4
+      label
+        b Authors (';' separated)
+      input(type='text' name='authors' value=resource.authors.join("; "))
+    .flex.flex-col.mb-4
+      label
+        b Hashtags (';' separated)
+      input(type='text' name='hashTags' value=resource.hashTags.join("; "))
+    if error
+        .flex.flex-col.mb-4
+            label
+            b(class='text-red-600') Error
+            p= error
+    input.button(type='submit' value='Confirm')

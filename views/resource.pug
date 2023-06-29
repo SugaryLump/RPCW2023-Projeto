@@ -31,10 +31,11 @@ block content
         if user && (user.level == "admin" || String(resource.posterID) == String(user._id))
           .flex.gap-4
             if resource.isPublic
-              a(href="/resources/togglevis/" + resource._id).text-xs.text-black Make Private
+              a(href="/resources/" + resource._id + "/togglevis").text-xs.text-black Make Private
             else
-              a(href="/resources/togglevis/" + resource._id).text-xs.text-black Make Public
-            a(href="/resources/delete/" + resource._id).text-xs.text-red-500 Delete
+              a(href="/resources/" + resource._id + "/togglevis").text-xs.text-black Make Public
+            a(href="/resources/" + resource._id + "/edit").text-xs.text-black Edit
+            a(href="/resources/" + resource._id + "/delete").text-xs.text-red-500 Delete
 
     if !user || resource.comments.every(c => String(c.posterID) != String(user._id))
       form(method="post" action=`/resources/${resource._id}/comment`).border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
@@ -66,4 +67,4 @@ block content
         div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
           p= comment.text
           if user && (user.level == "admin" || String(comment.posterID) == String(user._id))
-            a(href="/resources/deletecomment/" + resource._id + "?posterID=" + user._id).text-xs.text-red-500 Delete
+            a(href="/resources/" + resource._id + "/deletecomment" + "?posterID=" + user._id).text-xs.text-red-500 Delete

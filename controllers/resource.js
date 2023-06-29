@@ -79,7 +79,6 @@ module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
     date_filter = r.registrationDate >= filterObj.minDate && r.registrationDate <= filterObj.maxDate
     pub_filter = r.publisher.name.includes(filterObj.publisher)
     title_filter = r.title.includes(filterObj.title)
-    console.log(vis_filter)
     return vis_filter && rating_filter && tag_filter && date_filter && pub_filter && title_filter
   })
 
@@ -176,4 +175,11 @@ module.exports.toggleVisibility = async(resourceID) => {
   const resource = await resourceModel.findById(resourceID)
   resource.isPublic = !resource.isPublic
   return await resource.save()
+}
+
+module.exports.update = async(resource) => {
+  return await resourceModel.findOneAndUpdate(
+    {_id: resource._id},
+    {$set: resource},
+    {new: true})
 }

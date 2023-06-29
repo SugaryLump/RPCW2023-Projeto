@@ -7,13 +7,10 @@ var upload = require("../shared/upload");
 var bag = require("../shared/bag");
 var mongoose = require("mongoose");
 
-// # AUTHENTICATED ROUTES
-// ## New Resource
 router.get("/new", auth.isLogged, function (req, res, next) {
   res.render("addResourceForm");
 });
 
-// severely lacking in error handling!!
 router.post(
   "/new",
   auth.isLogged,
@@ -59,11 +56,57 @@ router.post(
   }
 );
 
+router.get(
+  "/:resourceID/edit",
+  auth.getResource,
+  auth.canEditResource,
+  async function (req, res, next) {
+    res.render('editResourceForm')
+})
+
+
+router.post(
+  "/:resourceID/edit",
+  auth.getResource,
+  auth.canEditResource,
+  async function (req, res, next) {
+    let resource = req.body;
+    console.dir(resource)
+    resource.authors = resource.authors
+      .split(";")
+      .map((author) => author.trim())
+      .filter((t) => t.length);
+    resource.hashtags = resource.hashTags
+      .split(";")
+      .map((hashTag) => hashTag.trim())
+      .filter((t) => t.length);
+    resource.posterID = res.locals.user._id;
+    resource.isPublic = req.body.visibility == "public";
+    resource._id = req.params.resourceID
+    try {
+      resource = await resourceController.update(resource)
+      if (resource.isPublic) {
+        await userController.sendNotification({
+          title: "Resource edited",
+          body: `Resource "${resource.title}" has been edited`,
+          link: `/resources/${resource._id}`,
+        });
+      }
+      res.redirect("/resources/" + resource._id);
+    }
+    catch (err) {
+      res.render("error", {
+        error: err,
+        message: "Error while editing resource",
+      });
+    }
+  }
+);
+
 router.all("/new", function (req, res, next) {
   res.redirect("/login?redirect=/resources/new");
 });
 
-// # UNRESTRICTED ROUTES
 router.get("/", async function (req, res, next) {
   sortObj = null;
   filterObj = null;
@@ -112,8 +155,6 @@ router.get("/", async function (req, res, next) {
   if (req.query.maxRating) {
     filterObj.maxRating = req.query.maxRating;
   }
-  console.dir(sortObj);
-  console.dir(filterObj);
   try {
     var resources = await resourceController.list(
       res.locals.user,
@@ -180,14 +221,14 @@ router.post(
     res.redirect("/login?redirect=/resources/" + res.locals.resource._id);
 });
 
-router.get("/delete/:resourceID", auth.getResource, auth.canEditResource, async function(req, res, next) {
+router.get("/:resourceID/delete", auth.getResource, auth.canEditResource, async function(req, res, next) {
   const status = await resourceController.remove(
     new mongoose.Types.ObjectId(res.locals.resource._id)
   )
   res.redirect("/")
 })
 
-router.get("/deletecomment/:resourceID", auth.getResource, auth.canEditComment, async function(req, res, next) {
+router.get("/:resourceID/deletecomment", auth.getResource, auth.canEditComment, async function(req, res, next) {
   const status = await resourceController.removeComment(
     res.locals.resource._id,
     new mongoose.Types.ObjectId(req.query.posterID)
@@ -195,7 +236,7 @@ router.get("/deletecomment/:resourceID", auth.getResource, auth.canEditComment, 
   res.redirect("/resources/" + req.params.resourceID)
 })
 
-router.get("/togglevis/:resourceID", auth.getResource, auth.canEditResource, async function(req, res, next) {
+router.get("/:resourceID/togglevis", auth.getResource, auth.canEditResource, async function(req, res, next) {
   const status = await resourceController.toggleVisibility(
     res.locals.resource._id,
   )
