@@ -41,7 +41,6 @@ module.exports.sendNotification = async (notification, user) => {
 };
 
 module.exports.getUnreadNotifications = async (userID) => {
-  console.log(userID);
   let notifications = await userModel.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(userID) } },
     { $unwind: "$notifications" },
@@ -51,4 +50,12 @@ module.exports.getUnreadNotifications = async (userID) => {
   ])
 
   return notifications;
+}
+
+module.exports.clearNotifications = async (userID) => {
+  // TODO: Mark read: true instead
+  await userModel.findOneAndUpdate(
+    { _id: userID },
+    { $set: {notifications: []} }
+  )
 }

@@ -24,4 +24,10 @@ router.post('/new', auth.isAdmin, async (req, res) => {
   res.render('newNotification');
 })
 
+router.get('/read', async (req, res) => {
+  await userController.clearNotifications(res.locals.user._id);
+
+  res.send({'status': 'ok'})
+});
+
 module.exports = router;

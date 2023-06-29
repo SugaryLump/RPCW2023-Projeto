@@ -1,22 +1,26 @@
 .flex.flex.gap-2
-  .flex.flex-col.gap-2(x-data="{open: true}").relative
+  .flex.flex-col(x-data="notifications").relative
     a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
       i(data-feather="bell")
-      | #{notifications.length}
+      span(x-text="notifications.length")
     .relative.flex.flex-col.items-center(x-show="open" x-cloak x-on:click.outside="open = false")
-      .absolute.top-0.flex.flex-col.items-center 
+      .absolute.top-0.flex.flex-col.items-center.mt-2
         .w-5.h-5.-mb-3.rotate-45.bg-white.shadow-md
         .relative.z-10.bg-white.w-80.shadow-md.rounded-lg.text-black
-          h2.p-2.text-center Notificações
+          .flex.justify-between.items-center.p-2
+            h2 Notifications
+            a(x-on:click="readNotifications()").cursor-pointer
+              i(data-feather="check")
           hr.border-gray-200
           .h-80.overflow-y-scroll.divide-y.divide-gray-200
-            if notifications 
-              each notification in notifications
+            template(x-if="notifications.length > 0")
+              template(x-for="notification in notifications")
                 div.p-2
-                  h3.text-2xl= notification.title
-                  p= notification.body
-            else 
-              p No notifications
+                  h3.text-2xl(x-text="notification.title")
+                  p(x-text="notification.body")
+                  p.text-sm.text-gray-600(x-text="new Intl.DateTimeFormat('pt-PT').format(new Date(notification.createdAt))")
+            template(x-if="notifications.length == 0")
+              p.p-2 No notifications
 
   .flex.flex-col.gap-2(x-data="{open: false}").relative
     a(x-on:click="open = !open").text-button.small.flex.gap-2.items-center.cursor-pointer
@@ -27,3 +31,20 @@
       if user.level == "admin"
         a.text-black(href="/notifications/new") Send notification
       a.text-black(href="/logout") Logout
+
+script.
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('notifications', () => {
+      return {
+        open: false,
+        notifications: JSON.parse("!{JSON.stringify(notifications).replaceAll('"', '\\"')}"),
+        readNotifications() {
+          fetch('/notifications/read').then(() => {
+            console.log("Cleared!")
+          })
+
+          this.notifications = [];
+        }
+      }
+    })
+  })
