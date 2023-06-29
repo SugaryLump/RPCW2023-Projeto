@@ -109,7 +109,7 @@ const calculateChecksum = (data) => {
   return crypto.createHash("md5").update(data).digest("hex");
 };
 
-async function generateTree(directoryPath, prefix = "") {
+async function generateTree(directoryPath, prefix = "\t\t") {
   console.log(directoryPath);
   const files = await fs.readdir(directoryPath);
 
@@ -129,7 +129,6 @@ async function generateTree(directoryPath, prefix = "") {
       tree += await generateTree(filePath, nestedPrefix);
     }
   }
-
   return tree;
 }
 module.exports.generateTree = generateTree;
