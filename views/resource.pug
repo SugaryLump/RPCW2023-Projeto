@@ -14,7 +14,8 @@ block content
           p Publisher: #{resource.publisher.name}
           p Type: #{resource.type}
           p= "Tags: " + resource['hashTags'].join("; ")
-          p Files: TODO
+          p Files:
+            include components/fileList
           p Size: TODO
           p Last edited: TODO
           if resource.rating

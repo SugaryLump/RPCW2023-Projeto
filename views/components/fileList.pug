@@ -1,0 +1,25 @@
+doctype html
+html
+  body(x-data="{ open: false }", class="bg-gray-100")
+    button(x-on:click="open = true", class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded")
+      | View
+
+    div(x-show="open", class="fixed z-10 inset-0 overflow-y-auto")
+      div(class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0")
+        div(class="fixed inset-0 transition-opacity")
+          div(class="absolute inset-0 bg-gray-500 opacity-75")
+        div(class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6")
+          h2(class="text-lg leading-6 font-medium text-gray-900 mb-4") File List
+          if paths
+              each path in paths
+                p(class="text-sm text-gray-500")= path
+
+script.
+    document.addEventListener("DOMContentLoaded", function() {
+        Alpine.data("modal", function() {
+          return {
+            open: false
+          }
+        });
+      });
+
