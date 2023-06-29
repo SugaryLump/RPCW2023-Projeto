@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    form#register-form(method="post").flex.flex-col.gap-2
+    form#register-form(method="post").flex.flex-col.gap-2.mb-4
         h1 Profile
         .flex.flex-col
             label(for="email" type="email") E-mail
@@ -13,12 +13,6 @@ block content
             label(for="name") Affiliation
             input(name="affiliation" value=user.affiliation)
         .flex.flex-col
-            label(for="password") Password
-            input(type='password', name="password")
-        .flex.flex-col
-            label(for="password_confirm") Confirm Password
-            input(type="password", name="password_confirm")
-        .flex.flex-col
             label(for="name") Last Active
             input(name="lastActiveAt" value=user.lastActiveAt readonly)
         .flex.flex-col
@@ -26,7 +20,26 @@ block content
             input(name="registerDate" value=user.createdAt readonly)
         .flex.flex-col
             label(for="name") Level
-            input(name="level" value=user.level readonly)
+            input(name="level" value=user.level readonly disabled)
         input(type="submit" value="Edit").button
+
         if result
             p= result
+    
+    form#password-form(method="post" action="/profile/password").flex.flex-col.gap-2.mb-2
+        h1 Change password
+        .flex.flex-col
+            label(for="password") Current password
+            input(type='password', name="password")
+        .flex.flex-col
+            label(for="password_confirm") New password
+            input(type="password", name="new_password")
+        .flex.flex-col
+            label(for="password_confirm") Confirm password
+            input(type="password", name="new_password_confirm")
+        input(type="submit" value="Change password").button
+
+        if passwordError
+            .rounded-md.bg-red-200.w-full.p-2.text-red-800.border.border-red-800
+                p.text-xl Error
+                p= passwordError

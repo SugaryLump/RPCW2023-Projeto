@@ -5,6 +5,7 @@ var userController = require('../controllers/user');
 var auth = require("../shared/auth");
 var upload = require("../shared/upload");
 var bag = require("../shared/bag");
+var mongoose = require("mongoose")
 
 // # AUTHENTICATED ROUTES
 // ## New Resource
@@ -28,11 +29,12 @@ router.post(
       .map((hashTag) => hashTag.trim())
       .filter(t => t);
     resource.posterID = res.locals.user._id;
-    resource.isPublic = resource.visibility == "public"
+    resource.isPublic = req.body.visibility == "public";
     try {
       var r = await bag.validateFile(req.file);
       if (r) {
         resource = await resourceController.insert(resource);
+        console.log(resource)
         
         if (resource.isPublic) {
           await userController.sendNotification({
@@ -119,11 +121,18 @@ router.get("/:resourceID", auth.getResource, function (req, res, next) {
   res.render("resource");
 });
 
-router.post("/:resourceID", auth.getResource, auth.isLogged, async function (req, res, next) {
+router.post("/:resourceID/comment", auth.getResource, auth.isLogged, async function (req, res, next) {
   comment = req.body
-  comment.posterID = res.locals.user._id
+  comment.posterID = new mongoose.Types.ObjectId(res.locals.user._id)
   resource = await resourceController.addComment(res.locals.resource._id, comment)
-  res.redirect(req.originalUrl);
+  
+  await userController.sendNotification({
+    title: `New comment in "${resource.title}"`,
+    body: `${res.locals.user.name}: "${comment.text}"`,
+    link: `/resources/${resource._id}`
+  }, {_id: resource.posterID})
+
+  res.redirect("/resources/" + res.locals.resource._id);
 });
 
 router.post("/:resourceID", auth.getResource, async function (req, res, next) {

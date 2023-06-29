@@ -18,7 +18,7 @@ block content
           p Size: TODO
           p Last edited: TODO
           if resource.rating
-            p= "Rating: " + resource.rating
+            p= "Rating: " + resource.rating.toFixed(2)
           else
             p= "Rating: Unrated"
         hr
@@ -28,7 +28,7 @@ block content
       div(class=["basis-4/5"]).flex-col.p-4
         p= resource.description
 
-    form(method="post").border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
+    form(method="post" action=`/resources/${resource._id}/comment`).border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
       p Leave a comment/rating:
       .flex.gap-4
         textarea(name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"').bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden

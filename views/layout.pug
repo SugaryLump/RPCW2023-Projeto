@@ -20,6 +20,11 @@ html
         else
             a(href='/login').text-button.small Login
     .container.mx-auto.px-4
+      if errors.length > 0
+        .rounded-md.bg-red-200.w-full.p-2.text-red-800.border.border-red-800
+            p.text-xl Error
+            each error in errors
+              p= error
       block content
 
     script(src='/js/feather.min.js')

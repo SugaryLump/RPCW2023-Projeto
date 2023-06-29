@@ -148,5 +148,7 @@ module.exports.get = async (resourceID) => {
       poster: user
     }
   }))
+
+
   return resource[0]
 }

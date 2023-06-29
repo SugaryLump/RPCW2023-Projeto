@@ -5,6 +5,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
+var flash = require("connect-flash")
+
 const { v4: uuidv4 } = require("uuid");
 var session = require("express-session");
 var passport = require("passport");
@@ -42,6 +44,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(flash());
+let flashes = (req, res, next) => {
+  res.locals.errors = req.flash('error')
+  next()
+}
 
 // passport config
 
@@ -69,11 +76,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(auth.getUser)
 //app.use(auth.getResource)
 
-app.use("/register", registerRouter);
-app.use("/login", loginRouter);
-app.use("/resources", resourceRouter);
-app.use("/profile", profileRouter);
-app.use("/notifications", notificationsRouter);
+app.use("/register", flashes, registerRouter);
+app.use("/login", flashes, loginRouter);
+app.use("/resources", flashes, resourceRouter);
+app.use("/profile", flashes, profileRouter);
+app.use("/notifications", flashes, notificationsRouter);
 app.use("/", indexRouter);
 
 // catch 404 and forward to error handler
