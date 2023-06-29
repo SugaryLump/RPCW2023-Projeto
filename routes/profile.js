@@ -12,8 +12,6 @@ router.get("/", auth.isLogged, async function (req, res) {
 router.post("/", auth.isLogged, async function (req, res) {
   // TODO update specific fields user
   try {
-    console.log(res.locals.user._id);
-    console.log(req.body.affiliation);
     var user = await userModel.findOneAndUpdate(
       { _id: res.locals.user._id },
       {
@@ -31,6 +29,22 @@ router.post("/", auth.isLogged, async function (req, res) {
     res.render("profile", { user: res.locals.user, result: err });
   }
 });
+
+router.post('/password', auth.isLogged, async (req, res) => {
+  try {
+    if (req.body.new_password != req.body.new_password_confirm) {
+      req.flash('error', "Passwords must match")
+    } else if (req.body.new_password.length == 0) {
+      req.flash('error', 'Password must not be empty')
+    } else {
+      
+    }
+  } catch (err) {
+
+  }
+
+  res.redirect('/profile');
+})
 
 router.get("/", async function (req, res) {
   res.redirect("/login");

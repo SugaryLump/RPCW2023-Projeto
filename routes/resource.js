@@ -27,10 +27,12 @@ router.post(
       .split(";")
       .map((hashTag) => hashTag.trim());
     resource.posterID = res.locals.user._id;
+    resource.isPublic = req.body.visibility == "public";
     try {
       var r = await bag.validateFile(req.file);
       if (r) {
         resource = await resourceController.insert(resource);
+        console.log(resource)
         
         if (resource.isPublic) {
           await userController.sendNotification({
