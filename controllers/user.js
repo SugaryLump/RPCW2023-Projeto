@@ -1,8 +1,11 @@
 var userModel = require("../models/user");
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 module.exports.isAdmin = async (userID) => {
-  let { level } = await userModel.findOne({ _id: userID }, { _id: 0, level: 1 })
+  let { level } = await userModel.findOne(
+    { _id: userID },
+    { _id: 0, level: 1 }
+  );
   return level == "admin";
 };
 
@@ -18,8 +21,10 @@ module.exports.updateLastActiveAt = async (user) => {
   );
 };
 module.exports.updateLastActiveAt = async (user) => {
-  return await userModel
-    .findOneAndUpdate({ _id: user._id }, { $set: { lastActiveAt: Date.now() } })
+  return await userModel.findOneAndUpdate(
+    { _id: user._id },
+    { $set: { lastActiveAt: Date.now() } }
+  );
 };
 
 module.exports.getUser = async (userID) => {
@@ -27,16 +32,16 @@ module.exports.getUser = async (userID) => {
 };
 
 module.exports.sendNotification = async (notification, user) => {
+  console.log("________ sending notification");
   if (user != null) {
-    return await userModel.findOneAndUpdate(
-      user,
-      { $push: { notifications: notification } }
-    );
+    return await userModel.findOneAndUpdate(user, {
+      $push: { notifications: notification },
+    });
   } else {
-    console.log("Sending notification to all users")
-    return await userModel.updateMany(
-      { $push: { notifications: notification } }
-    );
+    console.log("Sending notification to all users");
+    return await userModel.updateMany({
+      $push: { notifications: notification },
+    });
   }
 };
 
@@ -47,15 +52,15 @@ module.exports.getUnreadNotifications = async (userID) => {
     { $sort: { "notifications.createdAt": -1 } },
     { $replaceRoot: { newRoot: "$notifications" } },
     { $match: { read: false } },
-  ])
+  ]);
 
   return notifications;
-}
+};
 
 module.exports.clearNotifications = async (userID) => {
   // TODO: Mark read: true instead
   await userModel.findOneAndUpdate(
     { _id: userID },
-    { $set: {notifications: []} }
-  )
-}
+    { $set: { notifications: [] } }
+  );
+};

@@ -1,8 +1,10 @@
 const decompress = require("decompress");
 const path = require("path");
 const fs = require("fs").promises;
+const fs_extra = require("fs-extra");
 const crypto = require("crypto");
 const fileExists = async (path) => !!(await fs.stat(path).catch((e) => false));
+
 async function listFilesInDirectory(directoryPath) {
   try {
     const files = await fs.readdir(directoryPath);
@@ -20,31 +22,49 @@ module.exports.validateFile = async function (file) {
   if (file.mimetype != "application/zip") {
     return false;
   }
+  const outer_folder = file.filename.split(".")[0];
   const bagName = file.originalname.split(".")[0];
-  file_no_ext = Date.now() + "-" + bagName;
-  await decompress(file.path, file.destination + "/" + file_no_ext)
+  const fullFolderPath = file.destination + "/" + outer_folder;
+  await decompress(file.path, fullFolderPath)
     .then((files) => {
       console.log(files);
     })
     .catch((err) => {
       console.log(err);
     });
-  // TODO check if file is a valid bag
-  const bagPath =
-    "/app/" + file.destination + "/" + file_no_ext + "/" + bagName;
-  if (!(await isValidBag(bagPath))) {
+  const bagPath = "/app/" + fullFolderPath + "/" + bagName;
+  const isValid = await isValidBag(bagPath);
+
+  if (isValid) {
+    // TODO move unzipped
+    deleteFile(fullFolderPath + ".zip");
+    await moveFile(
+      "/app/" + fullFolderPath,
+      "/app/public/uploads/" + outer_folder
+    );
+    return outer_folder;
+  } else {
+    console.log("Gonna delete: " + fullFolderPath);
+    deleteFile(fullFolderPath);
+    deleteFile(fullFolderPath + ".zip");
     return false;
   }
-  // TODO move files to public/uploads
-  // delete file after decompress
-  //fs.unlink(file.path, (err) => {
-  //  if (err) {
-  //    console.error(err);
-  //    return;
-  //  }
-  //});
+};
 
-  return true;
+const moveFile = async (oldPath, newPath) => {
+  try {
+    await fs_extra.move(oldPath, newPath);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteFile = async (path) => {
+  try {
+    fs.rm(path, { recursive: true, force: true });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const isValidBag = async (bagPath) => {
@@ -55,7 +75,6 @@ const isValidBag = async (bagPath) => {
   if (!manifestFileExists || !dataDirExists) {
     return false;
   }
-  console.log("manifest file exists");
   try {
     var manifestContent = await fs.readFile(
       path.join(bagPath, "manifest-md5.txt"),
@@ -79,7 +98,6 @@ const isValidBag = async (bagPath) => {
       }
     } catch (err) {
       // File doesn't even exist for example
-      console.log("errrr: " + err);
       return false;
     }
   }
@@ -90,3 +108,28 @@ const isValidBag = async (bagPath) => {
 const calculateChecksum = (data) => {
   return crypto.createHash("md5").update(data).digest("hex");
 };
+
+async function generateTree(directoryPath, prefix = "") {
+  console.log(directoryPath);
+  const files = await fs.readdir(directoryPath);
+
+  let tree = "";
+
+  for (const file of files) {
+    const filePath = directoryPath + "/" + file;
+    const stats = await fs.stat(filePath);
+    const isDirectory = stats.isDirectory();
+
+    tree += prefix;
+    tree += isDirectory ? file + "/" : file;
+    tree += "\n";
+
+    if (isDirectory) {
+      const nestedPrefix = prefix + "  ";
+      tree += await generateTree(filePath, nestedPrefix);
+    }
+  }
+
+  return tree;
+}
+module.exports.generateTree = generateTree;

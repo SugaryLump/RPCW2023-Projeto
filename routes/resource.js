@@ -31,10 +31,10 @@ router.post(
     resource.posterID = res.locals.user._id;
     resource.isPublic = req.body.visibility == "public";
     try {
-      var r = await bag.validateFile(req.file);
-      if (r) {
+      var directory = await bag.validateFile(req.file);
+      if (directory) {
+        resource.directory = directory;
         resource = await resourceController.insert(resource);
-        console.log(resource);
 
         if (resource.isPublic) {
           await userController.sendNotification({
@@ -74,11 +74,11 @@ router.get("/", async function (req, res, next) {
     after: "",
     before: "",
     minRating: "",
-    maxRating: ""
-  }
+    maxRating: "",
+  };
 
   if (Object.keys(req.query).length > 0) {
-    query = req.query
+    query = req.query;
     filterObj = {
       publisher: req.query.publisher,
       minDate: new Date(-8640000000000000),
@@ -120,7 +120,10 @@ router.get("/", async function (req, res, next) {
       sortObj,
       filterObj
     );
-    res.render("resources", { resources: resources, query: query });
+    res.render("resources", {
+      resources: resources,
+      query: query,
+    });
   } catch (err) {
     res.render("error", { error: err, message: "Erro ao listar recursos" });
   }
@@ -134,8 +137,15 @@ router.get("/download/:fname", function (req, res) {
   res.download(__dirname + "/../public/uploads/" + filename, originalName);
 });
 
-router.get("/:resourceID", auth.getResource, function (req, res, next) {
-  res.render("resource");
+router.get("/:resourceID", auth.getResource, async function (req, res, next) {
+  // add error handling
+  const resource = await resourceController.get(req.params.resourceID);
+  const tree = await bag.generateTree(
+    "/app/public/uploads/" + resource.directory
+  );
+  res.render("resource", {
+    tree: tree,
+  });
 });
 
 router.post(

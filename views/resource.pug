@@ -14,7 +14,6 @@ block content
           p Publisher: #{resource.publisher.name}
           p Type: #{resource.type}
           p= "Tags: " + resource['hashTags'].join("; ")
-          p= paths.length
           p Files:
             include components/fileList
           p Size: TODO
