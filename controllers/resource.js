@@ -3,21 +3,86 @@ var userController = require("./user")
 var userModel = require("../models/user")
 var mongoose = require('mongoose')
 
-module.exports.list = () => {
-  return resourceModel.aggregate([
-    { $addFields: {"posterOID": {"$toObjectId": "$posterID"}}},
+module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
+  if (!sortObj) {
+    sortObj = {"registrationDate":1}
+  }
+  if (!filterObj) {
+    filterObj = {
+      publisher: "",
+      minDate: new Date(-8640000000000000),
+      maxDate: new Date(8640000000000000),
+      title: "",
+      minRating: 0,
+      maxRating: 5,
+      tags: []
+    }
+  }
+
+  var resources = await resourceModel.aggregate([
+    {$addFields: {
+      "posterOID": {"$toObjectId": "$posterID"},
+    }},
     {
-      $lookup: {
+      $set: {
+        rating: {
+          $avg: {
+            $map: {
+              input: {
+                $filter: {
+                  input: "$comments",
+                  as: "comment",
+                  cond: {
+                    $and: [
+                      { $gt: ["$$comment.rating", 0] },
+                      { $gt: ["$$comment.rating", null] } // Exclude null ratings
+                    ]
+                  }
+                }
+              },
+              as: "comment",
+              in: "$$comment.rating"
+            }
+          }
+        }
+      }
+    },
+    { $lookup: {
         from: "users",
         localField: "posterOID",
         foreignField: "_id",
-        as: "user",
+        as: "publisher",
       },
     },
-    {
-      $unwind: "$user",
-    },
+    { $unwind: "$publisher"},
+    { $sort: sortObj}
   ]);
+
+  resources = await Promise.all(resources.map(async (r) => {
+    r.comments = await Promise.all(r.comments.map(async (comment) => {
+      var user = await userController.get(comment.posterID)
+      return {
+        ...comment,
+        poster: user
+      }
+    }))
+    return r
+  }))
+
+  resources = resources.filter((r) => {
+    vis_filter = r.isPublic ||
+                 (viewerUser && 
+                    (viewerUser.level == "admin" || viewerUser._id == r.publisher._id))
+    
+    rating_filter = r.rating >= filterObj.minRating && r.rating <= filterObj.maxRating
+    tag_filter = filterObj.tags.every(tag => {return r.hashTags.includes(tag)})
+    date_filter = r.registrationDate >= filterObj.minDate && r.registrationDate <= filterObj.maxDate
+    pub_filter = r.publisher.name.includes(filterObj.publisher)
+    title_filter = r.title.includes(filterObj.title)
+    return vis_filter && rating_filter && tag_filter && date_filter && pub_filter && title_filter
+  })
+
+  return resources
 };
 
 module.exports.insert = async (resource) => {

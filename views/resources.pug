@@ -3,33 +3,64 @@ extends layout
 block nav
   .flex.gap-4
     h2 Resource List
-    a.text-button(href="/resources/new") +
+    a.text-button(href="/resources/new")  +
 
 block content
-  .modal(id="display")
-  .w3-card-4
-    .w3-container
-      table.w3-table.w3-bordered
-        tr
-          th Title
-          th Type
-          th Description
-          th Registration Date
-          th Visibility
-          th Poster
-          th Author
-          th Download
+  .flex.gap-4.flex-col.pb-4
+    form(method="get").border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
+      p.text-xl Filters and Sorting
+      .flex.gap-4
+        .flex.flex-col.items-center.justify-center
+          label(for="sort") Sort by:
+          select(name="sort").rounded-none.text-sm
+            option(value="registrationDate") New
+            option(value="title") Alphabetic
+            option(value="rating") Rating
+            option(value="publisher.name") Publisher
+        if Object.keys(query).length > 0
+          .flex.flex-col.gap-2
+            p Filters:
+            input(name="publisher" placeholder="Publisher" value=query.publisher).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(name="title" placeholder="Title" value=query.title).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(name="tags" placeholder="Tags (; separated)" value=query.tags).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            p.text-xs Posted before/after:
+            .flex.gap-2
+              input(type="date" name="after" value=query.after).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+              input(type="date" name="before" value=query.before).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            .flex.gap-2
+              input(name="minRating" placeholder="Minimum Rating" value=query.minRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+              input(name="maxRating" placeholder="Maximum Rating" value=query.maxRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+        else
+          .flex.flex-col.gap-2
+            p Filters:
+            input(name="publisher" placeholder="Publisher").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(name="title" placeholder="Title").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(name="tags" placeholder="Tags (; separated)").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            p.text-xs Posted before/after:
+            .flex.gap-2
+              input(type="date" name="after").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+              input(type="date" name="before").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            .flex.gap-2
+              input(name="minRating" placeholder="Minimum Rating").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+              input(name="maxRating" placeholder="Maximum Rating").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+      .flex
+        input(type="submit" value="Apply").rounded-full.bg-white.p-4.text-black.shadow-md
 
-        each r in resources
-          tr
-            td= r.title
-            td= r.type
-            td= r.description
-            td= r.registrationDate
-            if r.isPublic
-              td Public
+    hr
+    each resource in resources
+      a(href="/resources/" + resource._id).no-underline.text-black
+        .flex.border.border-primary-600.justify-self-stretch.shadow-md
+          div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
+            if resource.rating
+              p #[b= resource.rating]
             else
-              td Private
-            td= r.user.name
-            td= r.authors
-            td #[a.w3-button.w3-round.w3-blue(href="/resources/download/"+ r._id) Download]
+               p
+                b Unrated
+          div(class=["basis-11/12"]).flex.flex-col.p-2
+            p.text-lg #[b= resource.title]
+            p.text-slate-500= resource.subtitle
+            p.text-slate-500= resource.publisher.name + " | " + resource.registrationDate.toISOString().substring(0,10) + " | " + resource.type
+            .flex
+              each tag in resource.hashTags
+                p.text-slate-500= tag
+

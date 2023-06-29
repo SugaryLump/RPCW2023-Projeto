@@ -21,11 +21,14 @@ router.post(
     let resource = req.body;
     resource.authors = resource.authors
       .split(";")
-      .map((author) => author.trim());
+      .map((author) => author.trim())
+      .filter(t => length(t));
     resource.hashtags = resource.hashTags
       .split(";")
-      .map((hashTag) => hashTag.trim());
+      .map((hashTag) => hashTag.trim())
+      .filter(t => t);
     resource.posterID = res.locals.user._id;
+    resource.isPublic = resource.visibility == "public"
     try {
       var r = await bag.validateFile(req.file);
       if (r) {
@@ -59,19 +62,49 @@ router.all("/new", function (req, res, next) {
 });
 
 // # UNRESTRICTED ROUTES
-router.get("/", function (req, res, next) {
-  console.log("request from: " + req.user);
+router.get("/", async function (req, res, next) {
+  sortObj = null
+  filterObj = null
+  if (Object.keys(req.query).length > 0) {
+    filterObj = {
+      publisher: req.query.publisher,
+      minDate: new Date(-8640000000000000),
+      maxDate: new Date(8640000000000000),
+      title: req.query.title,
+      minRating: 0,
+      maxRating: 5,
+      tags: req.query.tags.split(";").map((hashTag) => hashTag.trim()).filter(t => t)
+    }
+  }
+  if (req.query.sort) {
+    sortObj = {}
+    sortObj[req.query.sort] = 1
+  }
 
-  resourceController
-    .list(req, res, next)
-    .then((resources) => {
-      res.render("resources", {
-        resources: resources,
-      });
-    })
-    .catch((err) => {
-      res.render("error", { error: err, message: "Erro ao listar recursos" });
-    });
+  if (req.query.after) {
+    filterObj.minDate = Date.parse(req.query.after)
+  }
+
+  if (req.query.before) {
+    filterObj.maxDate = Date.parse(req.query.before)
+  }
+
+  if (req.query.minRating) {
+    filterObj.minRating = req.query.minRating
+  }
+
+  if (req.query.maxRating) {
+    filterObj.maxRating = req.query.maxRating
+  }
+  console.dir(sortObj)
+  console.dir(filterObj)
+  try {
+    var resources = await resourceController.list(res.locals.user, sortObj, filterObj)
+    res.render("resources", {resources: resources, query: req.query})
+  }
+  catch (err) {
+    res.render("error", { error: err, message: "Erro ao listar recursos" });
+  }
 });
 
 // Needs complete restructuring - we're supposed to be compressing resources
