@@ -73,3 +73,8 @@ module.exports.clearNotifications = async (userID) => {
     { $set: { notifications: [] } }
   );
 };
+
+
+module.exports.deleteUser = async (userID) => {
+  return await userModel.deleteOne({ _id: userID });
+}
