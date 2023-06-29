@@ -45,6 +45,7 @@ router.post('/:userId/edit', auth.isAdmin, async (req, res) => {
           email: req.body.email,
           name: req.body.name,
           affiliation: req.body.affiliation,
+          level: req.body.level,
         },
       },
       { new: true }
@@ -77,8 +78,10 @@ router.post('/:userId/password', auth.isLogged, async (req, res) => {
     } else {
       if (!isAdmin)
         await user.changePassword(req.body.password, req.body.new_password)
-      else
+      else {
         await user.setPassword(req.body.new_password)
+        await user.save();
+      }
       req.flash('success', 'Password changed')
     }
   } catch (err) {
@@ -90,6 +93,13 @@ router.post('/:userId/password', auth.isLogged, async (req, res) => {
     res.redirect(`/user/${user._id}/edit`);
   else
     res.redirect(`/user/edit`);
+})
+
+router.get('/:userId/delete', auth.isAdmin, async (req, res) => {
+  await userController.deleteUser(req.params.userId);
+  req.flash('success', 'User deleted');
+
+  res.redirect('/admin')
 })
 
 router.get("/", async function (req, res) {
