@@ -28,8 +28,9 @@ var indexRouter = require("./routes/index");
 var loginRouter = require("./routes/login");
 var registerRouter = require("./routes/register");
 var resourceRouter = require("./routes/resource");
-var profileRouter = require("./routes/profile");
+var profileRouter = require("./routes/user");
 var notificationsRouter = require("./routes/notifications");
+var adminRouter = require("./routes/admin");
 var auth = require("./shared/auth")
 
 var app = express();
@@ -80,8 +81,9 @@ app.use(auth.getUser)
 app.use("/register", flashes, registerRouter);
 app.use("/login", flashes, loginRouter);
 app.use("/resources", flashes, resourceRouter);
-app.use("/profile", flashes, profileRouter);
+app.use("/user", flashes, profileRouter);
 app.use("/notifications", flashes, notificationsRouter);
+app.use("/admin", flashes, adminRouter);
 app.use("/", indexRouter);
 
 // catch 404 and forward to error handler

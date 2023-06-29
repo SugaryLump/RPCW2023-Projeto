@@ -35,9 +35,10 @@
       | #{user.name}
       i(data-feather="chevron-down")
     .absolute.bg-white.shadow-lg.rounded-md.text-black.p-2.flex.flex-col.gap-2.items-center.text-sm.mt-10.w-full.origin-top-right.right-0.text-center(x-cloak x-show="open" x-on:click.outside="open = false")
-      a.text-black(href="/profile") Edit profile
+      a.text-black(href=`/user/edit`) Edit profile
       if user.level == "admin"
         a.text-black(href="/notifications/new") Send notification
+        a.text-black(href="/admin") Admin panel
       a.text-black(href="/logout") Logout
 
 script.

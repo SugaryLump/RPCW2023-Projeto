@@ -31,6 +31,15 @@ module.exports.getUser = async (userID) => {
   return await userModel.findOne({ _id: userID }, { notifications: 0 });
 };
 
+module.exports.getAll = async (params) => {
+  if (params) {
+    let { page, limit } = params;
+    return await userModel.find({}, {_id: 1, name: 1, email: 1, affiliation: 1, level: 1}).skip(page * limit).limit(limit);
+  } else {
+    return await userModel.find({}, {_id: 1, name: 1, email: 1, affiliation: 1, level: 1});
+  }
+}
+
 module.exports.sendNotification = async (notification, user) => {
   console.log("________ sending notification");
   if (user != null) {

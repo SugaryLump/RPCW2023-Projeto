@@ -4,33 +4,39 @@ block content
     form#register-form(method="post").flex.flex-col.gap-2.mb-4
         h1 Profile
         .flex.flex-col
-            label(for="email" type="email") E-mail
-            input(name="email" value=user.email)
+            label(for="email") E-mail
+            input(name="email" type="email" value=editUser.email)
         .flex.flex-col
             label(for="name") Name
-            input(name="name" value=user.name)
+            input(name="name" value=editUser.name)
         .flex.flex-col
-            label(for="name") Affiliation
-            input(name="affiliation" value=user.affiliation)
+            label(for="affiliation") Affiliation
+            input(name="affiliation" value=editUser.affiliation)
         .flex.flex-col
-            label(for="name") Last Active
-            input(name="lastActiveAt" value=user.lastActiveAt readonly)
+            label(for="lastActiveAt") Last Active
+            input(name="lastActiveAt" value=editUser.lastActiveAt readonly)
         .flex.flex-col
-            label(for="name") Register Date
-            input(name="registerDate" value=user.createdAt readonly)
-        .flex.flex-col
-            label(for="name") Level
-            input(name="level" value=user.level readonly disabled)
+            label(for="registerDate") Register Date
+            input(name="registerDate" value=editUser.createdAt readonly)
+        
+        if user.level == "admin"
+            .flex.flex-col
+                label(for="level") Level
+                select(name="level" autocomplete="off")
+                    option(value="user" selected=(editUser.level === "user")) User
+                    option(value="admin" selected=(editUser.level === "admin")) Admin
+
         input(type="submit" value="Edit").button
 
         if result
             p= result
     
-    form#password-form(method="post" action="/profile/password").flex.flex-col.gap-2.mb-2
+    form#password-form(method="post" action=`/user/${editUser._id}/password`).flex.flex-col.gap-2.mb-2
         h1 Change password
-        .flex.flex-col
-            label(for="password") Current password
-            input(type='password', name="password")
+        if user.level != "admin"
+            .flex.flex-col
+                label(for="password") Current password
+                input(type='password', name="password")
         .flex.flex-col
             label(for="password_confirm") New password
             input(type="password", name="new_password")
