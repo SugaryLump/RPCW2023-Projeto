@@ -1,0 +1,26 @@
+extends layout 
+
+block content 
+  h1 Admin panel
+
+  h2 Manage users
+  table.w-full
+    thead
+      th.px-4.py-2.border.border-gray-400.bg-gray-100 Name
+      th.px-4.py-2.border.border-gray-400.bg-gray-100 Email
+      th.px-4.py-2.border.border-gray-400.bg-gray-100 Affiliation
+      th.px-4.py-2.border.border-gray-400.bg-gray-100 Level
+      th.px-4.py-2.border.border-gray-400.bg-gray-100 Actions
+    tbody
+      each user in users 
+        tr
+          td.px-4.py-2.border.border-gray-400= user.name
+          td.px-4.py-2.border.border-gray-400= user.email
+          td.px-4.py-2.border.border-gray-400= user.affiliation
+          td.px-4.py-2.border.border-gray-400= user.level
+          td.px-4.py-2.border.border-gray-400
+            .flex.justify-around
+              a(href=`/user/${user._id}/edit`) Edit
+              a(href=`/user/${user._id}/delete`).text-red-500 Delete
+  
+  h2 Manage resources
