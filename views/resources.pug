@@ -17,32 +17,18 @@ block content
             option(value="title") Alphabetic
             option(value="rating") Rating
             option(value="publisher.name") Publisher
-        if Object.keys(query).length > 0
-          .flex.flex-col.gap-2
-            p Filters:
-            input(name="publisher" placeholder="Publisher" value=query.publisher).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            input(name="title" placeholder="Title" value=query.title).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            input(name="tags" placeholder="Tags (; separated)" value=query.tags).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            p.text-xs Posted before/after:
-            .flex.gap-2
-              input(type="date" name="after" value=query.after).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-              input(type="date" name="before" value=query.before).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            .flex.gap-2
-              input(name="minRating" placeholder="Minimum Rating" value=query.minRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-              input(name="maxRating" placeholder="Maximum Rating" value=query.maxRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-        else
-          .flex.flex-col.gap-2
-            p Filters:
-            input(name="publisher" placeholder="Publisher").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            input(name="title" placeholder="Title").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            input(name="tags" placeholder="Tags (; separated)").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            p.text-xs Posted before/after:
-            .flex.gap-2
-              input(type="date" name="after").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-              input(type="date" name="before").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-            .flex.gap-2
-              input(name="minRating" placeholder="Minimum Rating").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-              input(name="maxRating" placeholder="Maximum Rating").bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+        .flex.flex-col.gap-2
+          p Filters:
+          input(name="publisher" placeholder="Publisher" value=query.publisher).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+          input(name="title" placeholder="Title" value=query.title).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+          input(name="tags" placeholder="Tags (; separated)" value=query.tags).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+          p.text-xs Posted before/after:
+          .flex.gap-2
+            input(type="date" name="after" value=query.after).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(type="date" name="before" value=query.before).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+          .flex.gap-2
+            input(name="minRating" placeholder="Minimum Rating" value=query.minRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+            input(name="maxRating" placeholder="Maximum Rating" value=query.maxRating).bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
       .flex
         input(type="submit" value="Apply").rounded-full.bg-white.p-4.text-black.shadow-md
 

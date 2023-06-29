@@ -67,7 +67,18 @@ router.all("/new", function (req, res, next) {
 router.get("/", async function (req, res, next) {
   sortObj = null;
   filterObj = null;
+  query = {
+    publisher: "",
+    title: "",
+    tags: "",
+    after: "",
+    before: "",
+    minRating: "",
+    maxRating: ""
+  }
+
   if (Object.keys(req.query).length > 0) {
+    query = req.query
     filterObj = {
       publisher: req.query.publisher,
       minDate: new Date(-8640000000000000),
@@ -109,7 +120,7 @@ router.get("/", async function (req, res, next) {
       sortObj,
       filterObj
     );
-    res.render("resources", { resources: resources, query: req.query });
+    res.render("resources", { resources: resources, query: query });
   } catch (err) {
     res.render("error", { error: err, message: "Erro ao listar recursos" });
   }

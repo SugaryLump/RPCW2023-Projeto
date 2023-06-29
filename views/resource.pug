@@ -25,25 +25,33 @@ block content
         .items-center.justify-self-stretch.flex
           a(href="/resources/download/" + resource._id).flex.flex-1.no-underline.text-black
             button.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md Download
-      div(class=["basis-4/5"]).flex-col.p-4
+      div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
         p= resource.description
+        if user && (user.level == "admin" || String(resource.posterID) == String(user._id))
+          .flex.gap-4
+            if resource.isPublic
+              a(href="/resources/togglevis/" + resource._id).text-xs.text-black Make Private
+            else
+              a(href="/resources/togglevis/" + resource._id).text-xs.text-black Make Public
+            a(href="/resources/delete/" + resource._id).text-xs.text-red-500 Delete
 
-    form(method="post" action=`/resources/${resource._id}/comment`).border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
-      p Leave a comment/rating:
-      .flex.gap-4
-        textarea(name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"').bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
-        .flex.flex-col.gap-1
-          .flex.flex-col.gap-1.flex-1
-            label(for="rating").text-sm Rating
-            select(name="rating").rounded-none.text-sm
-              option(value="0") No rating
-              option(value="1") 1
-              option(value="2") 2
-              option(value="3") 3
-              option(value="4") 4
-              option(value="5") 5
-          hr
-          input(type="submit" value="Post").rounded-full.bg-white.p-2.text-black.shadow-md
+    if !user || resource.comments.every(c => String(c.posterID) != String(user._id))
+      form(method="post" action=`/resources/${resource._id}/comment`).border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
+        p Leave a comment/rating:
+        .flex.gap-4
+          textarea(name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"').bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+          .flex.flex-col.gap-1
+            .flex.flex-col.gap-1.flex-1
+              label(for="rating").text-sm Rating
+              select(name="rating").rounded-none.text-sm
+                option(value="0") No rating
+                option(value="1") 1
+                option(value="2") 2
+                option(value="3") 3
+                option(value="4") 4
+                option(value="5") 5
+            hr
+            input(type="submit" value="Post").rounded-full.bg-white.p-2.text-black.shadow-md
 
     each comment in resource.comments
       .flex.border.border-primary-600.justify-self-stretch.shadow-md
@@ -54,5 +62,7 @@ block content
               p= "Rating: " + comment.rating
             else
               p= "Rating: Unrated"
-        div(class=["basis-4/5"]).flex-col.p-4
+        div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
           p= comment.text
+          if user && (user.level == "admin" || String(comment.posterID) == String(user._id))
+          a(href="/resources/deletecomment/" + resource._id).text-xs.text-red-500 Delete
