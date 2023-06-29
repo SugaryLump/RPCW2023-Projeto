@@ -6,9 +6,52 @@ block nav
     h3= resource.subtitle
 
 block content
-  .flex-col.border.border-primary-500.justify-self-stretch
-    .flex.bg-primary-500.border.border-red-500
-      .flex-1.justify-self-stretch.bg-red-500.justify-items-center.border.border-primary-5
-        button(class=["rounded-md", "border-", "hover:bg-white", "p-2"]) Download
-    .flex
-      p= resource.description
+  .flex.gap-4.flex-col.pb-4
+    .flex.border.border-primary-600.justify-self-stretch.shadow-md
+      div(class=["basis-1/5"]).bg-primary-600.flex-col.p-4.gap-4.text-white.flex
+        .flex-col.flex-1
+          p= "Authors: " + resource.authors.join("; ")
+          p Publisher: #{resource.publisher.name}
+          p Type: #{resource.type}
+          p= "Tags: " + resource['hashTags'].join("; ")
+          p Files: TODO
+          p Size: TODO
+          p Last edited: TODO
+          if resource.rating
+            p= "Rating: " + resource.rating
+          else
+            p= "Rating: Unrated"
+        hr
+        .items-center.justify-self-stretch.flex
+          button.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md Download
+      div(class=["basis-4/5"]).flex-col.p-4
+        p= resource.description
+
+    form(method="post").border.border-primary-600.flex.flex-col.p-4.gap-4.shadow-md
+      p Leave a comment/rating:
+      .flex.gap-4
+        textarea(name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"').bg-inherit.rounded-none.flex-1.text-left.resize-none.overflow-hidden
+        .flex.flex-col.gap-1
+          .flex.flex-col.gap-1.flex-1
+            label(for="rating").text-sm Rating
+            select(name="rating").rounded-none.text-sm
+              option(value="0") No rating
+              option(value="1") 1
+              option(value="2") 2
+              option(value="3") 3
+              option(value="4") 4
+              option(value="5") 5
+          hr
+          input(type="submit" value="Post").rounded-full.bg-white.p-2.text-black.shadow-md
+
+    each comment in resource.comments
+      .flex.border.border-primary-600.justify-self-stretch.shadow-md
+        div(class=["basis-1/5"]).bg-primary-600.flex-col.p-4.gap-4.text-white.flex
+          .flex-col.flex-1
+            p= comment.poster.name
+            if comment.rating
+              p= "Rating: " + resource.rating
+            else
+              p= "Rating: Unrated"
+        div(class=["basis-4/5"]).flex-col.p-4
+          p= resource.description

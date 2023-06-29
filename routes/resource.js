@@ -25,7 +25,7 @@ router.post(
       .map((author) => author.trim());
     resource.hashtags = resource.hashtags
       .split(";")
-      .map((hashtag) => hashtag.trim());
+      .map((hashTag) => hashTag.trim());
     resource.posterID = res.locals.user._id;
     resource = await resourceController.insert(resource);
     res.redirect("/resources/" + resource._id);
@@ -61,7 +61,6 @@ router.get("/download/:fname", function (req, res) {
 });
 
 router.get("/:resourceID", auth.getResource, function (req, res, next) {
-  console.dir(req.params)
   res.render("resource");
 });
 

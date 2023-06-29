@@ -23,7 +23,6 @@ module.exports.getUser = function(req, res, next) {
 // AUTHENTICATION AND VERIFICATION MIDDLEWARE
 // Places the resource in res.locals.resource (null no valid resource is found)
 module.exports.getResource = async function(req, res, next) {
-  console.dir(req.params)
   try {
     if (req.params.resourceID) {
       res.locals.resource = await resourceController.get(req.params.resourceID)
