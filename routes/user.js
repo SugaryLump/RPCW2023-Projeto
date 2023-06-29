@@ -45,6 +45,7 @@ router.post('/:userId/edit', auth.isAdmin, async (req, res) => {
           email: req.body.email,
           name: req.body.name,
           affiliation: req.body.affiliation,
+          level: req.body.level,
         },
       },
       { new: true }
