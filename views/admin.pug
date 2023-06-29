@@ -24,3 +24,22 @@ block content
               a(href=`/user/${user._id}/delete`).text-red-500 Delete
   
   h2 Manage resources
+  each resource in resources
+    .flex.border.border-primary-600.justify-self-stretch.shadow-md
+      div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
+        if resource.rating
+          p #[b= resource.rating.toFixed(2)]
+        else
+          p
+          b Unrated
+      a(href="/resources/" + resource._id class="basis-11/12").no-underline.text-black
+        .flex.flex-col.p-2
+          p.text-lg #[b= resource.title]
+          p.text-slate-500= resource.subtitle
+          p.text-slate-500= resource.publisher.name + " | " + resource.registrationDate.toISOString().substring(0,10) + " | " + resource.type
+          .flex
+            each tag in resource.hashTags
+              p.text-slate-500= tag
+      div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
+        a(href=`/resources/${resource._id}/edit`).text-white Edit
+        a(href=`/resources/${resource._id}/delete`).text-red-600 Delete
