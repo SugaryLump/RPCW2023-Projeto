@@ -21,7 +21,7 @@ router.post('/new', auth.isAdmin, async (req, res) => {
 
   const not = await userController.sendNotification(notification, user);
 
-  res.render('newNotification');
+  res.redirect('/notifications/new');
 })
 
 router.get('/read', async (req, res) => {
