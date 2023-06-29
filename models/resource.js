@@ -9,7 +9,15 @@ var resourceSchema = mongoose.Schema({
   isPublic: Boolean,
   authors: [String],
   hashTags: [String],
-  posterID: String
+  posterID: String,
+  comments: {
+    type: [{
+      text: String,
+      rating: Number,
+      posterID: String 
+    }],
+    default: []
+  }
 });
 
 module.exports = mongoose.model("resource", resourceSchema);
