@@ -14,8 +14,6 @@ block content
           p Publisher: #{resource.publisher.name}
           p Type: #{resource.type}
           p= "Tags: " + resource['hashTags'].join("; ")
-          p Size: TODO
-          p Last edited: TODO
           if resource.rating
             p= "Rating: " + resource.rating.toFixed(2)
           else
