@@ -127,7 +127,8 @@ router.post(
           title: "Resource edited",
           body: `Resource "${resource.title}" has been edited`,
           link: `/resources/${resource._id}`,
-        });
+        },
+        { _id: resource.posterID });
       }
       req.flash('success', 'Resource edited')
       res.redirect("/resources/" + resource._id);
