@@ -52,7 +52,7 @@ router.post(
       .split(";")
       .map((author) => author.trim())
       .filter((t) => t.length);
-    resource.hashtags = resource.hashTags
+    resource.hashTags = resource.hashTags
       .split(";")
       .map((hashTag) => hashTag.trim())
       .filter((t) => t);
@@ -110,7 +110,7 @@ router.post(
       .split(";")
       .map((author) => author.trim())
       .filter((t) => t.length);
-    resource.hashtags = resource.hashTags
+    resource.hashTags = resource.hashTags
       .split(";")
       .map((hashTag) => hashTag.trim())
       .filter((t) => t.length);
@@ -128,7 +128,7 @@ router.post(
           body: `Resource "${resource.title}" has been edited`,
           link: `/resources/${resource._id}`,
         },
-        { _id: resource.posterID });
+          { _id: resource.posterID });
       }
       req.flash('success', 'Resource edited')
       res.redirect("/resources/" + resource._id);
