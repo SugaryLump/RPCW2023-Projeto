@@ -61,9 +61,9 @@ router.get(
   auth.getResource,
   auth.canEditResource,
   async function (req, res, next) {
-    res.render('editResourceForm')
-})
-
+    res.render("editResourceForm");
+  }
+);
 
 router.post(
   "/:resourceID/edit",
@@ -71,7 +71,7 @@ router.post(
   auth.canEditResource,
   async function (req, res, next) {
     let resource = req.body;
-    console.dir(resource)
+    console.dir(resource);
     resource.authors = resource.authors
       .split(";")
       .map((author) => author.trim())
@@ -82,9 +82,9 @@ router.post(
       .filter((t) => t.length);
     resource.posterID = res.locals.user._id;
     resource.isPublic = req.body.visibility == "public";
-    resource._id = req.params.resourceID
+    resource._id = req.params.resourceID;
     try {
-      resource = await resourceController.update(resource)
+      resource = await resourceController.update(resource);
       if (resource.isPublic) {
         await userController.sendNotification({
           title: "Resource edited",
@@ -93,8 +93,7 @@ router.post(
         });
       }
       res.redirect("/resources/" + resource._id);
-    }
-    catch (err) {
+    } catch (err) {
       res.render("error", {
         error: err,
         message: "Error while editing resource",
@@ -172,10 +171,13 @@ router.get("/", async function (req, res, next) {
 
 // Needs complete restructuring - we're supposed to be compressing resources
 // and then downloading
-router.get("/download/:fname", function (req, res) {
-  const filename = req.params.fname;
+router.get("/download/:resourceID", async function (req, res) {
+  const resource = await resourceController.get(req.params.resourceID);
+  const filename = resource.directory;
   const originalName = filename.replace(/(.*?)-/, "");
-  res.download(__dirname + "/../public/uploads/" + filename, originalName);
+  const compressedPath = await bag.compressFile(filename);
+  res.download(compressedPath, originalName + ".zip");
+  bag.deleteFile(compressedPath);
 });
 
 router.get("/:resourceID", auth.getResource, async function (req, res, next) {
@@ -219,28 +221,44 @@ router.post(
   auth.getResource,
   async function (req, res, next) {
     res.redirect("/login?redirect=/resources/" + res.locals.resource._id);
-});
+  }
+);
 
-router.get("/:resourceID/delete", auth.getResource, auth.canEditResource, async function(req, res, next) {
-  const status = await resourceController.remove(
-    new mongoose.Types.ObjectId(res.locals.resource._id)
-  )
-  res.redirect("/")
-})
+router.get(
+  "/:resourceID/delete",
+  auth.getResource,
+  auth.canEditResource,
+  async function (req, res, next) {
+    const status = await resourceController.remove(
+      new mongoose.Types.ObjectId(res.locals.resource._id)
+    );
+    res.redirect("/");
+  }
+);
 
-router.get("/:resourceID/deletecomment", auth.getResource, auth.canEditComment, async function(req, res, next) {
-  const status = await resourceController.removeComment(
-    res.locals.resource._id,
-    new mongoose.Types.ObjectId(req.query.posterID)
-  )
-  res.redirect("/resources/" + req.params.resourceID)
-})
+router.get(
+  "/:resourceID/deletecomment",
+  auth.getResource,
+  auth.canEditComment,
+  async function (req, res, next) {
+    const status = await resourceController.removeComment(
+      res.locals.resource._id,
+      new mongoose.Types.ObjectId(req.query.posterID)
+    );
+    res.redirect("/resources/" + req.params.resourceID);
+  }
+);
 
-router.get("/:resourceID/togglevis", auth.getResource, auth.canEditResource, async function(req, res, next) {
-  const status = await resourceController.toggleVisibility(
-    res.locals.resource._id,
-  )
-  res.redirect("/resources/" + req.params.resourceID)
-})
+router.get(
+  "/:resourceID/togglevis",
+  auth.getResource,
+  auth.canEditResource,
+  async function (req, res, next) {
+    const status = await resourceController.toggleVisibility(
+      res.locals.resource._id
+    );
+    res.redirect("/resources/" + req.params.resourceID);
+  }
+);
 
 module.exports = router;

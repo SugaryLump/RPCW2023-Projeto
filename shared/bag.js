@@ -2,8 +2,19 @@ const decompress = require("decompress");
 const path = require("path");
 const fs = require("fs").promises;
 const fs_extra = require("fs-extra");
+const AdmZip = require("adm-zip");
 const crypto = require("crypto");
 const fileExists = async (path) => !!(await fs.stat(path).catch((e) => false));
+
+// Receives directory name associated with resource
+module.exports.compressFile = async function (dir_name) {
+  const zip = new AdmZip();
+  const outputFile = "/app/tmp/" + dir_name + ".zip";
+  zip.addLocalFolder("/app/public/uploads/" + dir_name);
+  zip.writeZip(outputFile);
+  console.log(`Created ${outputFile} successfully`);
+  return outputFile;
+};
 
 async function listFilesInDirectory(directoryPath) {
   try {
@@ -66,6 +77,7 @@ const deleteFile = async (path) => {
     console.log(err);
   }
 };
+module.exports.deleteFile = deleteFile;
 
 const isValidBag = async (bagPath) => {
   const manifestFileExists = await fileExists(
@@ -109,7 +121,7 @@ const calculateChecksum = (data) => {
   return crypto.createHash("md5").update(data).digest("hex");
 };
 
-async function generateTree(directoryPath, prefix = "\t\t") {
+async function generateTree(directoryPath, prefix = "\t") {
   console.log(directoryPath);
   const files = await fs.readdir(directoryPath);
 
