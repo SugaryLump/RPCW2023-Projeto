@@ -53,7 +53,7 @@ block content
           p.text-lg #[b= resource.title]
           p.text-slate-500= resource.subtitle
           p.text-slate-500= resource.publisher.name + " | " + resource.registrationDate.toISOString().substring(0,10) + " | " + resource.type
-          .flex
+          .flex.gap-2
             each tag in resource.hashTags
               p.text-slate-500= tag
       div(class=["basis-1/12"]).flex.flex-col.bg-primary-600.p-2.text-white.items-center.justify-center
