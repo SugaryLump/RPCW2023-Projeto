@@ -12,14 +12,14 @@ html
       each alert in alerts
         .alert=alert
     nav.flex.bg-primary-700.p-4.text-white.shadow-md.items-center.justify-between.mb-4
-      div
-        block nav
+      a(href="/").font-bold.text-3xl.no-underline.text-white LearnVault
       .flex.items-center
         if user
           include components/userMenu
         else
             a(href='/login').text-button.small Login
     .container.mx-auto.px-4
+      block nav
       if errors && errors.length > 0
         .rounded-md.bg-red-200.w-full.p-2.text-red-800.border.border-red-800
             p.text-xl Error

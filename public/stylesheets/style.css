@@ -29,7 +29,7 @@ h2 {
 }
 
 a.text-button {
-  @apply text-slate-800 no-underline text-4xl bg-white px-4 text-center rounded-full;
+  @apply text-slate-800 no-underline text-4xl bg-white px-4 text-center rounded-full shadow-md;
 }
 
 .text-button.small {
