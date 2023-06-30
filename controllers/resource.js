@@ -127,6 +127,7 @@ module.exports.get = async (resourceID) => {
       }
     },
     { $unwind: "$type" },
+    { $addFields: { typeID: "$type._id" } },
     { $set: { type: "$type.name" } },
     {
       $addFields: {
@@ -167,6 +168,7 @@ module.exports.get = async (resourceID) => {
     },
     { $unwind: "$publisher" },
   ])
+
 
   if (resource.length == 0) {
     throw new Error("Resource not found")

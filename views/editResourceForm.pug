@@ -22,9 +22,9 @@ block content
       .flex.flex-col.mb-4
         label
           b Resource Type
-        select(name='type', required='required')
+        select(name='type', required='required' autocomplete="off")
           each type in resourceTypes
-            option(value=type._id)= type.name
+            option(value=type._id selected=(type._id.toString() == resource.typeID.toString()))= type.name
     fieldset.contents.mb-6
       legend.text-2xl Visibility
       .flex.flex-col.mb-4
