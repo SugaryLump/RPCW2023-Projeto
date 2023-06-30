@@ -23,9 +23,12 @@ block content
 
         hr
         include components/fileList
-        a(href="/resources/download/" + resource._id).flex.flex-1.no-underline.text-black.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md.w-full Download
+        a(href="/resources/download/" + resource._id).no-underline.text-black.rounded-full.bg-white.p-4.text-xl.text-black.flex-1.shadow-md.w-full.text-center.block Download
       div(class=["basis-4/5"]).flex-col.p-4.justify-between.flex
-        p= resource.description
+        if resource.description
+          p= resource.description
+        else
+          p.italic No description
         if user && (user.level == "admin" || String(resource.posterID) == String(user._id))
           .flex.gap-4
             if resource.isPublic

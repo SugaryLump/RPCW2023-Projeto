@@ -27,15 +27,8 @@ block content
         label
           b Resource Type
         select(name='type', required='required')
-          option(value='report') Relatório
-          option(value='thesis') Tese
-          option(value='article') Artigo
-          option(value='book') Livro
-          option(value='slides') Apresentação
-          option(value='test') Teste
-          option(value='solved_exercise') Problema Resolvido
-          option(value='application') Aplicação
-          option(value='other') Outro
+          each type in resourceTypes
+            option(value=type._id)= type.name
     fieldset.contents.mb-6
       legend.text-2xl Visibility
       .flex.flex-col.mb-4

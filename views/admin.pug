@@ -22,6 +22,22 @@ block content
             .flex.justify-around
               a(href=`/user/${user._id}/edit`) Edit
               a(href=`/user/${user._id}/delete`).text-red-500 Delete
+
+  h2.my-2 Manage resource types
+  .grid.w-full(class="grid-cols-[1fr_min-content]")
+    .px-4.py-2.border.border-gray-400.bg-gray-100.text-center Type
+    .px-4.py-2.border.border-gray-400.bg-gray-100.text-center Action
+    each resourceType in resourceTypes
+      form(action=`/resources/type/${resourceType._id}/edit` method="post").contents
+        .px-4.py-2.border.border-gray-400
+          input(type="text" name="name" placeholder="Name" value=resourceType.name required).w-full
+        .px-4.py-2.border.border-gray-400 
+          input(type="submit" value="Change name").button.w-full
+    form(action="/resources/type/new" method="post").contents
+      .px-4.py-2.border.border-gray-400
+        input(type="text" name="name" placeholder="New resource type" required).w-full
+      .px-4.py-2.border.border-gray-400 
+        input(type="submit" value="Add").button.w-full
   
   h2.my-2 Manage resources
   each resource in resources

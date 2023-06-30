@@ -1,11 +1,12 @@
 var resourceModel = require("../models/resource");
 var userController = require("./user")
-var userModel = require("../models/user")
-var mongoose = require('mongoose')
+var resourceTypeModel = require("../models/resourceTypes");
+var mongoose = require('mongoose');
+const resourceTypes = require("../models/resourceTypes");
 
-module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
+module.exports.list = async (viewerUser, sortObj = null, filterObj = null) => {
   if (!sortObj) {
-    sortObj = {"registrationDate":1}
+    sortObj = { "registrationDate": 1 }
   }
   if (!filterObj) {
     filterObj = {
@@ -20,9 +21,21 @@ module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
   }
 
   var resources = await resourceModel.aggregate([
-    {$addFields: {
-      "posterOID": {"$toObjectId": "$posterID"},
-    }},
+    {
+      $addFields: {
+        "posterOID": { "$toObjectId": "$posterID" },
+      }
+    },
+    {
+      $lookup: {
+        localField: "type",
+        foreignField: "_id",
+        from: "resourcetypes",
+        as: "type"
+      }
+    },
+    { $unwind: "$type" },
+    { $set: { type: "$type.name" } },
     {
       $set: {
         rating: {
@@ -47,15 +60,16 @@ module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
         }
       }
     },
-    { $lookup: {
+    {
+      $lookup: {
         from: "users",
         localField: "posterOID",
         foreignField: "_id",
         as: "publisher",
       },
     },
-    { $unwind: "$publisher"},
-    { $sort: sortObj}
+    { $unwind: "$publisher" },
+    { $sort: sortObj }
   ]);
 
   resources = await Promise.all(resources.map(async (r) => {
@@ -71,11 +85,11 @@ module.exports.list = async (viewerUser, sortObj=null, filterObj=null) => {
 
   resources = resources.filter((r) => {
     vis_filter = r.isPublic ||
-                 (viewerUser && 
-                    (viewerUser.level == "admin" || viewerUser._id == r.posterID))
-    
+      (viewerUser &&
+        (viewerUser.level == "admin" || viewerUser._id == r.posterID))
+
     rating_filter = r.rating >= filterObj.minRating && r.rating <= filterObj.maxRating
-    tag_filter = filterObj.tags.every(tag => {return r.hashTags.includes(tag)})
+    tag_filter = filterObj.tags.every(tag => { return r.hashTags.includes(tag) })
     date_filter = r.registrationDate >= filterObj.minDate && r.registrationDate <= filterObj.maxDate
     pub_filter = r.publisher.name.includes(filterObj.publisher)
     title_filter = r.title.includes(filterObj.title)
@@ -96,17 +110,29 @@ module.exports.isPoster = async (resourceID, userID) => {
 
 module.exports.addComment = async (resourceID, comment) => {
   return await resourceModel.findOneAndUpdate(
-    {_id: resourceID},
-    {$push: {comments: comment}}
+    { _id: resourceID },
+    { $push: { comments: comment } }
   )
 }
 
 module.exports.get = async (resourceID) => {
   let resource = await resourceModel.aggregate([
-    { $match: {_id: new mongoose.Types.ObjectId(resourceID) }},
-    { $addFields: {
-      "posterOID": {"$toObjectId": "$posterID"},
-    }},
+    { $match: { _id: new mongoose.Types.ObjectId(resourceID) } },
+    {
+      $lookup: {
+        localField: "type",
+        foreignField: "_id",
+        from: "resourcetypes",
+        as: "type"
+      }
+    },
+    { $unwind: "$type" },
+    { $set: { type: "$type.name" } },
+    {
+      $addFields: {
+        "posterOID": { "$toObjectId": "$posterID" },
+      }
+    },
     {
       $set: {
         rating: {
@@ -131,14 +157,15 @@ module.exports.get = async (resourceID) => {
         }
       }
     },
-    { $lookup: {
+    {
+      $lookup: {
         from: "users",
         localField: "posterOID",
         foreignField: "_id",
         as: "publisher",
       },
     },
-    { $unwind: "$publisher"},
+    { $unwind: "$publisher" },
   ])
 
   if (resource.length == 0) {
@@ -157,29 +184,43 @@ module.exports.get = async (resourceID) => {
 }
 
 module.exports.remove = async (resourceID) => {
-  const status = await resourceModel.deleteOne({_id: resourceID})
+  const status = await resourceModel.deleteOne({ _id: resourceID })
   return status
 }
 
 module.exports.removeComment = async (resourceID, posterID) => {
   const status = await resourceModel.updateMany(
-    { $pull: {
-        "comments": {"posterID": posterID}
-    }}
+    {
+      $pull: {
+        "comments": { "posterID": posterID }
+      }
+    }
   )
 
   return status
 }
 
-module.exports.toggleVisibility = async(resourceID) => {
+module.exports.toggleVisibility = async (resourceID) => {
   const resource = await resourceModel.findById(resourceID)
   resource.isPublic = !resource.isPublic
   return await resource.save()
 }
 
-module.exports.update = async(resource) => {
+module.exports.update = async (resource) => {
   return await resourceModel.findOneAndUpdate(
-    {_id: resource._id},
-    {$set: resource},
-    {new: true})
+    { _id: resource._id },
+    { $set: resource },
+    { new: true })
+}
+
+module.exports.listTypes = async () => {
+  return await resourceTypes.find({});
+}
+
+module.exports.addType = async (typeName) => {
+  return await resourceTypes.create({ name: typeName })
+}
+
+module.exports.renameType = async (typeId, name) => {
+  return await resourceTypes.findOneAndUpdate({ _id: typeId }, { $set: { name } })
 }

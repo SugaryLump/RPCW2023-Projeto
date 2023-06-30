@@ -7,8 +7,39 @@ var upload = require("../shared/upload");
 var bag = require("../shared/bag");
 var mongoose = require("mongoose");
 
-router.get("/new", auth.isLogged, function (req, res, next) {
-  res.render("addResourceForm");
+router.post('/type/new', auth.isAdmin, async (req, res) => {
+  if (!req.body.name || req.body.name.trim().length == 0) {
+    req.flash('error', 'Name can not be empty')
+  } else {
+    try {
+      await resourceController.addType(req.body.name);
+      req.flash('success', 'Added resource')
+    } catch (err) {
+      req.flash('error', err.toString())
+    }
+  }
+
+  res.redirect('/admin')
+})
+
+router.post('/type/:resourceTypeId/edit', auth.isAdmin, async (req, res) => {
+  if (!req.body.name || req.body.name.trim().length == 0) {
+    req.flash('error', 'Name can not be empty')
+  } else {
+    try {
+      await resourceController.renameType(req.params.resourceTypeId, req.body.name);
+      req.flash('success', 'Changed resource')
+    } catch (err) {
+      req.flash('error', err.toString())
+    }
+  }
+
+  res.redirect('/admin')
+})
+
+router.get("/new", auth.isLogged, async function (req, res) {
+  let resourceTypes = await resourceController.listTypes();
+  res.render("addResourceForm", { resourceTypes });
 });
 
 router.post(
@@ -27,6 +58,9 @@ router.post(
       .filter((t) => t);
     resource.posterID = res.locals.user._id;
     resource.isPublic = req.body.visibility == "public";
+    if (req.body.type != "other") {
+      resource.type = req.body.type;
+    }
     try {
       var directory = await bag.validateFile(req.file);
       if (directory) {
@@ -43,9 +77,8 @@ router.post(
 
         res.redirect("/resources/" + resource._id);
       } else {
-        res.locals.error = "Wrong File Type";
-        res.locals.resource = resource;
-        res.render("addResourceForm");
+        req.flash("Wrong file type");
+        res.redirect('/resources/new');
       }
     } catch (err) {
       res.render("error", {
@@ -61,9 +94,10 @@ router.get(
   auth.getResource,
   auth.canEditResource,
   async function (req, res, next) {
-    res.render("editResourceForm");
-  }
-);
+    let resourceTypes = await resourceController.listTypes();
+    res.render('editResourceForm', { resourceTypes })
+  })
+
 
 router.post(
   "/:resourceID/edit",
@@ -83,6 +117,9 @@ router.post(
     resource.posterID = res.locals.user._id;
     resource.isPublic = req.body.visibility == "public";
     resource._id = req.params.resourceID;
+    if (req.body.type != "other") {
+      resource.type = req.body.type;
+    }
     try {
       resource = await resourceController.update(resource);
       if (resource.isPublic) {
@@ -92,6 +129,7 @@ router.post(
           link: `/resources/${resource._id}`,
         });
       }
+      req.flash('success', 'Resource edited')
       res.redirect("/resources/" + resource._id);
     } catch (err) {
       res.render("error", {
@@ -236,29 +274,19 @@ router.get(
   }
 );
 
-router.get(
-  "/:resourceID/deletecomment",
-  auth.getResource,
-  auth.canEditComment,
-  async function (req, res, next) {
-    const status = await resourceController.removeComment(
-      res.locals.resource._id,
-      new mongoose.Types.ObjectId(req.query.posterID)
-    );
-    res.redirect("/resources/" + req.params.resourceID);
-  }
-);
+router.get("/:resourceID/deletecomment", auth.getResource, auth.canEditComment, async function (req, res, next) {
+  const status = await resourceController.removeComment(
+    res.locals.resource._id,
+    new mongoose.Types.ObjectId(req.query.posterID)
+  )
+  res.redirect("/resources/" + req.params.resourceID)
+})
 
-router.get(
-  "/:resourceID/togglevis",
-  auth.getResource,
-  auth.canEditResource,
-  async function (req, res, next) {
-    const status = await resourceController.toggleVisibility(
-      res.locals.resource._id
-    );
-    res.redirect("/resources/" + req.params.resourceID);
-  }
-);
+router.get("/:resourceID/togglevis", auth.getResource, auth.canEditResource, async function (req, res, next) {
+  const status = await resourceController.toggleVisibility(
+    res.locals.resource._id,
+  )
+  res.redirect("/resources/" + req.params.resourceID)
+})
 
 module.exports = router;
